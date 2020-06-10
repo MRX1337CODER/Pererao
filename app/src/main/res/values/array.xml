@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="qualifications_array">
+        <item>@string/qualification_programmer</item>
+        <item>@string/qualification_mechanical</item>
+        <item>@string/qualification_plumber</item>
+        <item>@string/qualification_eletricista</item>
+        <item>@string/qualification_chaveiro</item>
+    </string-array>
+</resources>

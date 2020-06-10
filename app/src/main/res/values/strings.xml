@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pererão</string>
+    <string name="developed">Desenvolvido Por CheckPoint</string>
+
+    <!--Geral-->
+    <string name="hint_email">E-mail</string>
+    <string name="hint_password">Senha</string>
+    <string name="or">Ou</string>
+    <string name="reset_password">Restaurar Senha</string>
+    <!--Geral-->
+
+    <!--Login-->
+    <string name="tv_login">Entre</string>
+    <string name="create_account_login">Não Possuo Uma Conta</string>
+    <string name="forgot_password_login">Esqueci Minha Senha</string>
+    <string name="or_enter_with">Ou Entre Com</string>
+    <!--Login-->
+
+    <!--Cadastro-->
+    <string name="tv_register">Cadastre-se</string>
+    <string name="user_photo_add">Sua Foto</string>
+    <string name="hint_name_register">Nome Completo</string>
+    <string name="hint_confirm_email">Confirme Seu E-mail</string>
+    <string name="hint_confirm_password">Confirme Sua Senha</string>
+    <!--==========================================================-->
+    <string name="terms_conditions">Aceito os <a href="terms:">Termos e Condições</a> e a <a href="privacy:">Política de Privacidade.</a></string>
+    <!--==========================================================-->
+    <string name="text_back_to_login">Já Possuo Uma Conta</string>
+    <!--Cadastro-->
+
+    <!--Endereço-->
+    <string name="cep">CEP</string>
+    <string name="photo_necessary">É Necessário Adicionar Uma Foto!</string>
+    <string name="complemento">Complemento</string>
+    <string name="numero_cep">Número</string>
+    <!--Endereço-->
+
+    <!--Prestador-->
+    <string name="qualifications">Adicionar Qualificações</string>
+    <string name="qualification_programmer">Programador</string>
+    <string name="qualification_mechanical">Mecânico</string>
+    <string name="qualification_plumber">Encanador</string>
+    <string name="qualification_eletricista">Eletricista</string>
+    <string name="qualification_chaveiro">Chaveiro</string>
+    <!--Prestador-->
+
+    <!--Outros-->
+    <string name="title_home">Início</string>
+    <string name="title_map">Mapa</string>
+    <string name="title_chat">Bate-Papo</string>
+    <string name="title_configuration">Configuração</string>
+    <string name="dark_mode">Tema Escuro</string>
+    <string name="google">Google</string>
+    <string name="email_forgot_pass">Digite Seu E-mail De Restauração</string>
+    <string name="exit_app">Sair</string>
+    <string name="help">Ajuda</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="write_message">Digite uma mensagem</string>
+    <string name="pre_orcamento">Pré-Orçamento</string>
+    <!--Outros-->
+
+</resources>

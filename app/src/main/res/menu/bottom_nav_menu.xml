@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/navigation_home"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:title="@string/title_home"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/navigation_map"
+            android:icon="@drawable/ic_map_black_24dp"
+            android:title="@string/title_map" />
+
+        <item
+            android:id="@+id/navigation_chat"
+            android:icon="@android:drawable/sym_action_chat"
+            android:title="@string/title_chat" />
+
+        <item
+            android:id="@+id/navigation_configuration"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/title_configuration" />
+
+    </group>
+
+</menu>

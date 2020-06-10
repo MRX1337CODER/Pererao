@@ -1,0 +1,120 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--Default Theme-->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="attrPrimaryColor">@color/colorPrimary</item>
+        <item name="attrPrimaryColorDark">@color/colorPrimaryDark</item>
+
+        <item name="textColorEditText">#121212</item>
+
+        <item name="android:label">#121212</item>
+        <item name="BackgroundColor">#f2f2f2</item>
+        <item name="BackgroundColorSplashScreen">@color/colorPrimary</item>
+        <item name="BackgroundColorCard">#F2E4E4E4</item>
+        <item name="HintColor">#ED131313</item>
+        <item name="wGray">#6B6B6B</item>
+        <!--item name="BackgroundColorDark"></item-->
+        <item name="TextColor">#131313</item>
+        <item name="TintColor">@color/colorPrimary</item>
+        <item name="ButtonColor">@android:color/black</item>
+        <item name="White">#fff</item>
+        <item name="textSplash">@android:color/white</item>
+    </style>
+    <!--Default Theme-->
+
+    <!--Dark Theme-->
+    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+        <item name="colorPrimary">@color/DarkColorPrimary</item>
+        <item name="colorPrimaryDark">@color/DarkColorPrimaryDark</item>
+        <item name="colorAccent">@color/DarkColorAccent</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="attrPrimaryColor">#851AFF</item>
+        <item name="attrPrimaryColorDark">#500E9A</item>
+
+        <item name="textColorEditText">#F4F4F4</item>
+
+        <item name="android:label">#f1f1f1</item>
+        <item name="BackgroundColor">#303030</item>
+        <item name="BackgroundColorSplashScreen">#001418</item>
+        <item name="BackgroundColorCard">#F7646464</item>
+        <item name="HintColor">#F3E0E0E0</item>
+        <item name="wGray">#A2A2A2</item>
+        <!--item name="BackgroundColorDark"></item-->
+        <item name="TextColor">#ffffff</item>
+        <item name="TintColor">#001418</item>
+        <item name="ButtonColor">@android:color/white</item>
+        <item name="White">#161616</item>
+        <item name="textSplash">@color/colorPrimary</item>
+    </style>
+    <!--Dark Theme-->
+
+    <!--FullScreen Theme-->
+    <style name="AppTheme.FullScreen" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorPrimary</item>
+    </style>
+
+    <style name="DarkTheme.FullScreen" parent="DarkTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/DarkColorPrimary</item>
+    </style>
+    <!--FullScreen Theme-->
+
+    <!--Dialog Theme-->
+    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@android:color/holo_red_dark</item>
+        <item name="android:windowBackground">@android:color/holo_blue_light</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+        <item name="android:textColorAlertDialogListItem">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <!--item name="android:windowTitleStyle">...</item>
+        <item name="android:textAppearanceMedium">...</item>
+        <item name="android:borderlessButtonStyle">...</item>
+        <item name="android:buttonBarStyle">...</item-->
+    </style>
+    <!--Dialog Theme-->
+
+    <!--Transition-->
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+    <!--Transition-->
+
+    <!--Other Themes-->
+    <style name="CheckBox_Custom">
+        <item name="colorControlNormal">#121212</item>
+        <item name="colorControlActivated">#121212</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--Other Themes-->
+</resources>

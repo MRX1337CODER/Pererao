@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ds">
+
+        <attr name="attrPrimaryColor" format="color" />
+        <attr name="attrPrimaryColorDark" format="color" />
+
+        <attr name="BackgroundColor" format="color" />
+        <attr name="BackgroundColorSplashScreen" format="color" />
+        <attr name="BackgroundColorCard" format="color" />
+        <attr name="BackgroundColorDark" format="color" />
+        <attr name="TextColor" format="color" />
+        <attr name="HintColor" format="color" />
+        <attr name="TintColor" format="color" />
+        <attr name="ButtonColor" format="color" />
+        <attr name="wGray" format="color" />
+        <attr name="White" format="color" />
+        <attr name="textSplash" format="color" />
+
+        <attr name="textColorEditText" format="color" />
+
+    </declare-styleable>
+
+</resources>
