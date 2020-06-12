@@ -81,15 +81,21 @@ public class VerifyAccount extends AppCompatActivity {
                         });
                     }
                 });
-            } else if (emailVerified) {
+            } if (emailVerified) {
                 Intent intent = new Intent(VerifyAccount.this, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
         }
+        else {
+            Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
 
-        //VerifyAuthentication();
+        VerifyAuthentication();
     }
 
     @Override

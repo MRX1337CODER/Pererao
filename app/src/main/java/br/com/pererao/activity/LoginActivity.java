@@ -258,8 +258,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void ResetPass() {
         btn_forgot_password.setEnabled(false);
-        Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+        Intent intent = new Intent(LoginActivity.this, NewPasswordActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("passIntentString", "RestaurarSenha");
         startActivity(intent);
         finish();
     }

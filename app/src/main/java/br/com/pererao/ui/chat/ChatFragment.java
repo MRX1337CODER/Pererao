@@ -36,7 +36,6 @@ public class ChatFragment extends Fragment {
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
     DatabaseReference mDatabaseReference;
-    static boolean statusF = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

@@ -53,6 +53,8 @@
     <string name="dark_mode">Tema Escuro</string>
     <string name="google">Google</string>
     <string name="email_forgot_pass">Digite Seu E-mail De Restauração</string>
+    <string name="new_password">Digite Sua Nova Senha</string>
+    <string name="old_password">Digite Sua Senha Atual</string>
     <string name="exit_app">Sair</string>
     <string name="help">Ajuda</string>
 
