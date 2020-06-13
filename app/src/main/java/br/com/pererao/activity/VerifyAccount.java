@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,16 +18,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import br.com.pererao.R;
 import br.com.pererao.SnackBarCustom;
 
 public class VerifyAccount extends AppCompatActivity {
     Button btn_resendCode;
-    FirebaseAuth mFirebaseAuth, auth;
-    FirebaseFirestore mFirebaseFirestore;
-    FirebaseUser mUser;
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mFirebaseUser;
     String UserID;
     RelativeLayout relativeLayout;
     private static final String TAG = "VerifyAccount";
@@ -42,12 +39,10 @@ public class VerifyAccount extends AppCompatActivity {
 
         //TODO: Declarações
         relativeLayout = findViewById(R.id.rl_verifyAccount);
-        auth = FirebaseAuth.getInstance();
         btn_resendCode = findViewById(R.id.btn_resend_code);
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseFirestore = FirebaseFirestore.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
         UserID = FirebaseAuth.getInstance().getUid();
-        mUser = mFirebaseAuth.getCurrentUser();
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Verificar Conta");
         setSupportActionBar(toolbar);
@@ -68,7 +63,7 @@ public class VerifyAccount extends AppCompatActivity {
                 btn_resendCode.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {
-                        mUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
@@ -81,14 +76,14 @@ public class VerifyAccount extends AppCompatActivity {
                         });
                     }
                 });
-            } if (emailVerified) {
+            }
+            if (emailVerified) {
                 Intent intent = new Intent(VerifyAccount.this, ProfileActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
-        }
-        else {
+        } else {
             Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);

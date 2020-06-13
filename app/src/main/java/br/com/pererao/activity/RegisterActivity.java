@@ -62,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
     User user;
     //Firebase
     FirebaseAuth mFirebaseAuth;
-    FirebaseFirestore mFirebaseFirestore;
     FirebaseUser mFirebaseUser;
     FirebaseDatabase mFirebaseDatabase;
     DatabaseReference mDatabaseReference;
@@ -102,7 +101,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         relativeLayout = findViewById(R.id.rl_register);
         //Firebase
-        mFirebaseFirestore = FirebaseFirestore.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference(USUARIO);
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -116,19 +114,10 @@ public class RegisterActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
 
         //Setando UID aleatorio pelo firebase
-        //FirebaseUser usernull = mFirebaseAuth.getCurrentUser();
         FirebaseUser usernull = FirebaseAuth.getInstance().getCurrentUser();
         if (usernull != null) {
             UserID = usernull.getUid();
         }
-
-        /*Registro*/
-        /*if (mFirebaseAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            RegisterActivity.this.finish();
-        }*/
 
     }
 
@@ -187,9 +176,7 @@ public class RegisterActivity extends AppCompatActivity {
                     float upDY = upRawY - downRawY;
 
                     if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE) { // A click
-                        // return performClick();
                         goto_login();
-                        //Toast.makeText(getApplicationContext(), "clicked", Toast.LENGTH_SHORT).show();
 
                     } else { // A drag
                         return true; // Consumed
@@ -440,13 +427,11 @@ public class RegisterActivity extends AppCompatActivity {
                             });
                         }
 
-
-                        //String keyId = mDatabaseReference.push().getKey();
-                        //assert keyId != null;
                         String userUrl = "default";
                         String status = "offline";
                         String search = name.toLowerCase();
-                        user = new User(id, name, email,password, userUrl, status, search);
+                        float rating = 0;
+                        user = new User(id, name, email,password, userUrl, status, search, rating);
                        /* HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("id", id);
                         hashMap.put("nomeUser", name);

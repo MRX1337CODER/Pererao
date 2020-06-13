@@ -1,31 +1,14 @@
 package br.com.pererao.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -34,21 +17,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
-
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.util.List;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
-import br.com.pererao.model.User;
-import br.com.pererao.ui.chat.ChatFragment;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -63,9 +48,6 @@ public class ProfileActivity extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
     boolean doubleBackToExitPressedOnce = false;
     RelativeLayout relativeLayout;
-    DatabaseReference mDatabaseReference;
-    private static final String USUARIO = "Usuario";
-    ImageView img_user;
     String UserID;
 
     @Override
@@ -86,12 +68,9 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         relativeLayout = findViewById(R.id.rl_profile);
 
-        img_user = findViewById(R.id.img_user);
-
         VerifyAuthentication();
 
         //ToolBar
-        //toolbar.setTitle(R.string.reset_password);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -105,49 +84,11 @@ public class ProfileActivity extends AppCompatActivity {
         FirebaseUser usernull = mFirebaseAuth.getCurrentUser();
         if (usernull != null) {
             UserID = usernull.getUid();
-        }
-        else {
+        } else {
             VerifyAuthentication();
         }
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
 
-        mDatabaseReference.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            User user = snapshot.getValue(User.class);
-                            assert user != null;
-                            if (user.getNomeUser() == null || user.getEmailUser() == null) {
-                                Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
-                            }
-                            if (user.getUserUrl().equals("default")) {
-                                Glide.with(getApplicationContext())
-                                        .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
-                                        .transform(new CircleCrop())
-                                        .into(img_user);
-                            }
-                            else{
-                                Glide.with(getApplicationContext())
-                                        .load(user.getUserUrl())
-                                        .transform(new CircleCrop())
-                                        .into(img_user);
-                            }
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e("HomeFragment", "Erro ao ler o valor: " + databaseError.toException());
-                    }
-                }
-        );
-
-
+        //intentGetEx = getIntent();
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = new AppBarConfiguration.Builder(

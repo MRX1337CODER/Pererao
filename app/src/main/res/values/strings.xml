@@ -53,8 +53,6 @@
     <string name="dark_mode">Tema Escuro</string>
     <string name="google">Google</string>
     <string name="email_forgot_pass">Digite Seu E-mail De Restauração</string>
-    <string name="new_password">Digite Sua Nova Senha</string>
-    <string name="old_password">Digite Sua Senha Atual</string>
     <string name="exit_app">Sair</string>
     <string name="help">Ajuda</string>
 
@@ -62,6 +60,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="write_message">Digite uma mensagem</string>
     <string name="pre_orcamento">Pré-Orçamento</string>
+    <string name="update_data">Atualizar Dados</string>
+    <string name="update_profile">Atualizar Perfil</string>
+
+
+    <!--string name="new_email">Digite Seu Novo E-mail</string>
+    <string name="old_email">Digite Seu E-mail Atual</string>
+    <string name="new_password">Digite Sua Nova Senha</string>
+    <string name="old_password">Digite Sua Senha Atual</string-->
     <!--Outros-->
 
 </resources>

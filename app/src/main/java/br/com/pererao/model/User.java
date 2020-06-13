@@ -2,18 +2,18 @@ package br.com.pererao.model;
 
 public class User {
 
+    private String id;
     private String nomeUser;
     private String emailUser;
     private String senhaUser;
     private String userUrl;
-    private String id;
     private String status;
     private String search;
+    private float rating;
 
-    public User() {
-    }
+    public User() {}
 
-    public User(String id, String nomeUser, String emailUser, String senhaUser, String userUrl, String status, String search) {
+    public User(String id, String nomeUser, String emailUser, String senhaUser, String userUrl, String status, String search, float rating) {
         this.id = id;
         this.nomeUser = nomeUser;
         this.emailUser = emailUser;
@@ -21,6 +21,7 @@ public class User {
         this.userUrl = userUrl;
         this.status = status;
         this.search = search;
+        this.rating = rating;
     }
 
     public User(String nomeUser, String emailUser) {
@@ -96,5 +97,13 @@ public class User {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
     }
 }

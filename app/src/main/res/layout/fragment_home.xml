@@ -8,31 +8,67 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         tools:ignore="MissingConstraints">
 
-        <TextView
+        <ImageView
+            android:id="@+id/img_user"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="75dp"
+            android:layout_marginEnd="30dp"
+            tools:ignore="ContentDescription"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
             android:id="@+id/tv_name_user"
             android:layout_width="wrap_content"
-            android:text="Nome"
             android:layout_height="wrap_content"
-            android:layout_marginTop="328dp"
+            android:layout_below="@id/img_user"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
             android:layout_marginEnd="8dp"
+            android:text="@string/hint_name_register"
             android:textAlignment="center"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_centerHorizontal="true"
             android:id="@+id/tv_email_user"
             android:layout_width="wrap_content"
-            android:text="Email"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name_user"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="28dp"
             android:layout_marginEnd="8dp"
+            android:text="@string/hint_email"
             android:textAlignment="center"
             android:textSize="20sp" />
+
+        <RatingBar
+            android:id="@+id/ratingBarUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_email_user"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
+            android:numStars="5"
+            android:rating="2.5"
+            android:stepSize="0.5" />
+
+        <!--com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_edit_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="normal"
+            app:fabCustomSize="60dp"
+            app:elevation="0dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_edit_black_24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            tools:ignore="PrivateResource" /-->
 
     </RelativeLayout>
 

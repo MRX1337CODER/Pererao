@@ -25,6 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+        <activity android:name=".activity.UpdateProfileActivity"></activity>
         <activity
             android:name=".activity.SplashScreen"
             android:screenOrientation="portrait"
@@ -52,7 +53,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".activity.NewPasswordActivity"
+            android:name=".activity.ResetPasswordActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity

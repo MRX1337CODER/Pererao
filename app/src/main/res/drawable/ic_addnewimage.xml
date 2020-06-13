@@ -1,0 +1,38 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="172dp"
+    android:height="172dp"
+    android:viewportWidth="172"
+    android:viewportHeight="172">
+  <path
+      android:pathData="M86,5.375c-44.528,0 -80.625,36.097 -80.625,80.625c0,44.528 36.097,80.625 80.625,80.625c44.528,0 80.625,-36.097 80.625,-80.625c0,-44.528 -36.097,-80.625 -80.625,-80.625z"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="1"
+      android:fillColor="#333333"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M86,171.463c-47.085,0 -85.463,-38.378 -85.463,-85.463c0,-47.085 38.378,-85.463 85.463,-85.463c47.085,0 85.463,38.378 85.463,85.463c0,47.085 -38.378,85.463 -85.463,85.463zM86,10.213c-41.764,0 -75.788,34.024 -75.788,75.788c0,41.764 34.024,75.788 75.788,75.788c41.764,0 75.788,-34.024 75.788,-75.788c0,-41.764 -34.024,-75.788 -75.788,-75.788z"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="1"
+      android:fillColor="#333333"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M86,115.025c-2.741,0 -4.838,-2.096 -4.838,-4.838l0,-48.375c0,-2.741 2.096,-4.838 4.838,-4.838c2.741,0 4.838,2.096 4.838,4.838l0,48.375c0,2.741 -2.096,4.838 -4.838,4.838z"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="1"
+      android:fillColor="#3498db"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"
+      android:strokeLineCap="butt"/>
+  <path
+      android:pathData="M110.188,90.838l-48.375,0c-2.741,0 -4.838,-2.096 -4.838,-4.838c0,-2.741 2.096,-4.838 4.838,-4.838l48.375,0c2.741,0 4.838,2.096 4.838,4.838c0,2.741 -2.096,4.838 -4.838,4.838z"
+      android:strokeLineJoin="miter"
+      android:strokeWidth="1"
+      android:fillColor="#3498db"
+      android:fillType="nonZero"
+      android:strokeColor="#00000000"
+      android:strokeLineCap="butt"/>
+</vector>
