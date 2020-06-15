@@ -64,32 +64,95 @@ public class VerifyAccount extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //TODO: Ações
-
-        if (mFirebaseUser != null && mFirebaseUser.isEmailVerified()) {
-            gotoDashboard();
-        } else if (mFirebaseUser != null && !mFirebaseUser.isEmailVerified()) {
-            btn_resendCode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
-                            gotoLogin();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
-                        }
-                    });
-                }
-            });
-        } else {
+        FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
+        Fuser.reload();
+        if (Fuser == null){
+            Log.i(TAG, "Sem Usuário");
             gotoLogin();
         }
+        else if (Fuser.isEmailVerified() || mFirebaseAuth.getCurrentUser().isEmailVerified()){
+            Log.i(TAG, "E-mail verificado");
+            gotoDashboard();
+        }
+        else if (!Fuser.isEmailVerified() || !mFirebaseAuth.getCurrentUser().isEmailVerified()){
+            Log.i(TAG, "E-mail NÂO verificado");
+            resendCode();
+        }
 
+        /*if (mFirebaseUser == null){
+            Log.i(TAG, "User Nulo");
+            gotoLogin();
+        }
+        else if (mFirebaseAuth == null){
+            Log.i(TAG, "Auth Nulo");
+            gotoLogin();
+        }
+        else if (mFirebaseUser != null && !mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "User N Nulo && E-mail não verificado");
+            resendCode();
+        }
+        else if (mFirebaseAuth != null && !mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "Auth N Nulo e E-mail n verificado");
+            resendCode();
+        }
+        else if (mFirebaseUser != null && mFirebaseUser.isEmailVerified() || mFirebaseAuth.getCurrentUser() != null && mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "E-mail verificado <<<<<<<<<");
+            gotoDashboard();
+        }*/
+
+
+       /* if (mFirebaseUser == null) {
+            gotoLogin();
+        } else if (mFirebaseAuth == null){
+            gotoLogin();
+        }
+        else {
+            boolean ev = mFirebaseUser.isEmailVerified();
+            boolean ev2 = mFirebaseAuth.getCurrentUser().isEmailVerified();
+            Log.i(TAG, "emailUser:" + ev + "\nemailAuth:" + ev2);
+            if (mFirebaseAuth.getCurrentUser().isEmailVerified() || mFirebaseUser.isEmailVerified()) {
+                gotoDashboard();
+            } else {
+                btn_resendCode.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
+                                gotoLogin();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
+                            }
+                        });
+                    }
+                });
+            }
+        }*/
+
+    }
+
+    private void resendCode() {
+        btn_resendCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
+                        gotoLogin();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -109,11 +172,9 @@ public class VerifyAccount extends AppCompatActivity {
     }
 
     private void gotoLogin() {
-        if (mFirebaseUser == null) {
-            Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void gotoDashboard() {

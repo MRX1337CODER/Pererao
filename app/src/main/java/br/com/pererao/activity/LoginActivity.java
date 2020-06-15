@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -75,23 +76,53 @@ public class LoginActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        if (mFirebaseUser != null) {
-           updateUI(); //-------------------------------------------------------------------------------------------------------
+        /*mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                //gotoDashboard();
+            }
+        };*/
+
+        /*if (mFirebaseUser == null){
+            Log.i(TAG, "User Nulo");
         }
+        else if (mFirebaseAuth == null){
+            Log.i(TAG, "Auth Nulo");
+        }
+        else if (mFirebaseUser != null && !mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "User N Nulo && E-mail não verificado");
+        }
+        else if (mFirebaseAuth != null && !mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "Auth N Nulo e E-mail n verificado");
+        }
+        else if (mFirebaseUser != null && mFirebaseUser.isEmailVerified() || mFirebaseAuth.getCurrentUser() != null && mFirebaseUser.isEmailVerified()){
+            Log.i(TAG, "E-mail verificado <<<<<<<<<");
+            gotoDashboard();
+        }
+        else{
+            Log.i(TAG, "E-mail NNNNN verificado <<<<<<<<<");
+            gotoVerifyAccount();
+        }*//*
+        if (mFirebaseUser != null || mFirebaseAuth != null) {
+            assert mFirebaseUser != null;
+            if (mFirebaseUser.isEmailVerified()){
+                gotoDashboard();
+            }
+            else {
+                updateUI();
+            }
+            //updateUI(); //-------------------------------------------------------------------------------------------------------
+        }else {
+            Log.i(TAG, "Sem usuário");
+        }*/
 
         //ToolBar
         toolbar.setTitle(R.string.tv_login);
         setSupportActionBar(toolbar);
 
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         //TODO: Ações
-
         //TODO: Conectar(Login)
         btn_SingIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +147,20 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
+        if (Fuser != null) {
+            Fuser.reload();
+            Log.i(TAG, "Com Usuário");
+            gotoVerifyAccount();
+        }
+        else{
+            Log.i(TAG, "Sem Usuário");
+        }
     }
 
     @Override
@@ -172,7 +217,7 @@ public class LoginActivity extends AppCompatActivity {
                         LimparCampos();
                         Toast.makeText(getApplicationContext(), "Conectado Com Sucesso", Toast.LENGTH_SHORT).show();
                         loadingDialog.dismissDialog();
-                        updateUI();
+                        gotoVerifyAccount();
 
                     } else {
                         //Aqui mostra o erro
@@ -189,11 +234,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean validateEmailLogin() {
         String val = ti_et_email.getEditText().getText().toString().trim();
-        String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
         if (TextUtils.isEmpty(val)) {
             ti_et_email.setError("E-mail Obrigatório");
             return false;
-        } else if (!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//!val.matches(checkEmail)) {
             ti_et_email.setError("E-mail Inválido");
             return false;
         } else {
@@ -218,8 +264,26 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUI() {
+    /*private void updateUI(){
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        if (user == null){
+            Log.i(TAG, "Usuario não logado");
+            return;
+        }
+        else {
+
+        }
+    }*/
+
+    private void gotoVerifyAccount() {
         Intent intent = new Intent(LoginActivity.this, VerifyAccount.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void gotoDashboard() {
+        Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

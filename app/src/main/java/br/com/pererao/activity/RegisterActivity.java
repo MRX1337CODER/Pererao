@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +22,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,16 +33,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
 import br.com.pererao.model.User;
-
-import java.util.HashMap;
-import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -62,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
     private float CLICK_DRAG_TOLERANCE = 15, downRawX, downRawY, dX, dY;
     User user;
     //Firebase
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
     FirebaseDatabase mFirebaseDatabase;
@@ -105,7 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference(USUARIO);
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         //ToolBar
         toolbar = findViewById(R.id.toolbar);
@@ -114,6 +112,20 @@ public class RegisterActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+
+
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+                if (firebaseUser == null) {
+                    return;
+                }
+
+            }
+        };
 
         //Setando UID aleatorio pelo firebase
         FirebaseUser usernull = FirebaseAuth.getInstance().getCurrentUser();
@@ -293,13 +305,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean validateEmailRegister() {
         String val = ti_et_email.getEditText().getText().toString().trim();
-        String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if (TextUtils.isEmpty(val)) {
             ti_et_email.setError("E-mail Obrigatório");
             ti_et_email.requestFocus();
             return false;
-        } else if (!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//(!val.matches(checkEmail)) {
             ti_et_email.setError("E-mail Inválido");
             ti_et_email.requestFocus();
             return false;
@@ -312,13 +324,13 @@ public class RegisterActivity extends AppCompatActivity {
 
     public boolean validateConfirmEmailRegister() {
         String val = ti_et_confirm_email.getEditText().getText().toString().trim();
-        String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
         if (TextUtils.isEmpty(val)) {
             ti_et_confirm_email.setError("Confirmação De E-mail Obrigatório");
             ti_et_confirm_email.requestFocus();
             return false;
-        } else if (!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//!val.matches(checkEmail)) {
             ti_et_confirm_email.setError("E-mail Inválido");
             ti_et_confirm_email.requestFocus();
             return false;
@@ -407,6 +419,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         loadingDialog.dismissDialog();
 
+                        mFirebaseUser = mFirebaseAuth.getCurrentUser();
                         assert mFirebaseUser != null;
                         final String id = mFirebaseUser.getUid();
 
