@@ -19,6 +19,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.Objects;
+
 import br.com.pererao.R;
 import br.com.pererao.SnackBarCustom;
 
@@ -44,53 +46,50 @@ public class VerifyAccount extends AppCompatActivity {
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         UserID = FirebaseAuth.getInstance().getUid();
         toolbar = findViewById(R.id.toolbar);
+
+        //Toolbar
         toolbar.setTitle("Verificar Conta");
         setSupportActionBar(toolbar);
-
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoLogin();
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         //TODO: Ações
 
-        VerifyAuthentication();
-
-        if (user != null) {
-            boolean emailVerified = user.isEmailVerified();
-            if (!emailVerified) {
-                btn_resendCode.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(final View v) {
-                        mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
-                            }
-                        });
-                    }
-                });
-            }
-            if (emailVerified) {
-                Intent intent = new Intent(VerifyAccount.this, ProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
+        if (mFirebaseUser != null && mFirebaseUser.isEmailVerified()) {
+            gotoDashboard();
+        } else if (mFirebaseUser != null && !mFirebaseUser.isEmailVerified()) {
+            btn_resendCode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(v.getContext(), "E-mail De Verificação Foi Enviado, Clique Sobre Ele Para Confirar", Toast.LENGTH_SHORT).show();
+                            gotoLogin();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
+                        }
+                    });
+                }
+            });
         } else {
-            Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            gotoLogin();
         }
 
-        VerifyAuthentication();
     }
 
     @Override
@@ -109,12 +108,18 @@ public class VerifyAccount extends AppCompatActivity {
         }, 2000);
     }
 
-    private void VerifyAuthentication() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (FirebaseAuth.getInstance().getUid() == null || user == null) {
+    private void gotoLogin() {
+        if (mFirebaseUser == null) {
             Intent intent = new Intent(VerifyAccount.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    private void gotoDashboard() {
+        Intent intent = new Intent(VerifyAccount.this, DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

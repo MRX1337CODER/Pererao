@@ -1,4 +1,4 @@
-package br.com.pererao.ui.chat;
+package br.com.pererao.activity.ui.chat;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

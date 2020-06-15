@@ -3,13 +3,12 @@ package br.com.pererao.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,13 +39,14 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout ti_et_email, ti_et_password;
     ImageButton btn_SingIn;
     RelativeLayout relativeLayout;
-    FirebaseAuth mFirebaseAuth;
     MaterialButton btn_new_account, btn_forgot_password;
-    private static final String TAG = "LoginAcivityTAG";
+    private static final String TAG = "LoginActivityTAG";
     LoadingDialog loadingDialog = new LoadingDialog(LoginActivity.this);
-    Switch DarkMode;
     boolean doubleBackToExitPressedOnce = false;
     Toolbar toolbar;
+
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +72,17 @@ public class LoginActivity extends AppCompatActivity {
         btn_forgot_password = findViewById(R.id.btn_forgot_password);
         btn_SingIn = findViewById(R.id.btn_submit_login);
         relativeLayout = findViewById(R.id.rl_login);
-        DarkMode = findViewById(R.id.DarkMode);
+        toolbar = findViewById(R.id.toolbar);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-        if (currentUser != null) {
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser != null) {
            updateUI(); //-------------------------------------------------------------------------------------------------------
         }
 
         //ToolBar
-        toolbar = findViewById(R.id.toolbar);
-        this.toolbar.setTitle(R.string.tv_login);
+        toolbar.setTitle(R.string.tv_login);
         setSupportActionBar(toolbar);
 
     }
@@ -92,21 +91,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         //TODO: Ações
-        //Tema Escuro Botão
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            DarkMode.setChecked(true);
-        }
-        DarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton btnView, boolean isChecked) {
-                if (isChecked) {
-                    sharedPref.setEstadoTemaEscuro(true);
-                    restartApp();
-                } else {
-                    sharedPref.setEstadoTemaEscuro(false);
-                    restartApp();
-                }
-            }
-        });
 
         //TODO: Conectar(Login)
         btn_SingIn.setOnClickListener(new View.OnClickListener() {
@@ -154,12 +138,10 @@ public class LoginActivity extends AppCompatActivity {
         if (Network.isConnected(getApplication())) {
             ConfirmaCampos();
         } else {
-            SnackBarCustom.SnackSetAction(getApplication(), relativeLayout, R.color.snackBackground, false, "Sem Rede Disponível", "Tente Novamente", Snackbar.LENGTH_INDEFINITE, new View.OnClickListener() {
+            SnackBarCustom.SnackSetAction(getApplication(), relativeLayout, R.color.snackBackground, false, "Sem Rede Disponível", "Conectar", Snackbar.LENGTH_INDEFINITE, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (Network.isConnected(getApplication())) {
-                        VerifyNet();
-                    }
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                 }
             });
         }
@@ -264,9 +246,4 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    public void restartApp() {
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

@@ -4,7 +4,8 @@
 
     <item android:title="@string/pre_orcamento"
         android:id="@+id/pre_orcamento"
-        android:icon="@drawable/ic_pre_orcamento_black_24dp"
+        android:icon="@drawable/ic_preorcamento"
         app:showAsAction="ifRoom"
         />
+
 </menu>

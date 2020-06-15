@@ -1,4 +1,4 @@
-package br.com.pererao.ui.home;
+package br.com.pererao.activity.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import br.com.pererao.R;
 import br.com.pererao.activity.LoginActivity;
 import br.com.pererao.model.User;
 
-public class HomeFragment extends Fragment {
+public class Home extends Fragment {
 
     private TextView nameUser, emailUser;
     private ImageView img_user;
@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        View root = inflater.inflate(R.layout.profile_activity, container, false);
         VerifyAuthentication();
         img_user = root.findViewById(R.id.img_user);
         nameUser = root.findViewById(R.id.tv_name_user);

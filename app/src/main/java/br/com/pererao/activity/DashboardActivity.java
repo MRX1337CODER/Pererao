@@ -7,48 +7,36 @@ import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-
-import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.ui.configuration.Configuration;
 
-public class ProfileActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
 
     SharedPref sharedPref;
-    AppBarConfiguration appBarConfiguration;
-    NavController navController;
-    BottomNavigationView navView;
     Toolbar toolbar;
-    NavigationView navigationView;
-    DrawerLayout drawer;
-    ActionBarDrawerToggle toggle;
-    FirebaseAuth mFirebaseAuth;
     boolean doubleBackToExitPressedOnce = false;
-    RelativeLayout relativeLayout;
+    LinearLayout linearLayout;
     String UserID;
+    Button btn_profile, btn_maps, btn_chat, btn_configuration;
+
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mFirebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,56 +48,43 @@ public class ProfileActivity extends AppCompatActivity {
             setTheme(R.style.AppTheme);
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        drawer = findViewById(R.id.drawer_layout);
-        navView = findViewById(R.id.nav_view);
-        navigationView = findViewById(R.id.nav_viewDrawable);
-        toolbar = findViewById(R.id.toolbar);
-        relativeLayout = findViewById(R.id.rl_profile);
+        setContentView(R.layout.activity_dashboard);
 
         VerifyAuthentication();
+        //TODO: Declarações
+        toolbar = findViewById(R.id.toolbar);
+        linearLayout = findViewById(R.id.linearLayout);
+
+        btn_profile = findViewById(R.id.btn_profile);
+        btn_maps = findViewById(R.id.btn_maps);
+        btn_chat = findViewById(R.id.btn_chat);
+        btn_configuration = findViewById(R.id.btn_configuration);
+        //Firebase
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
 
         //ToolBar
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        toolbar.setTitle("Painel");
 
-
-        FirebaseUser usernull = mFirebaseAuth.getCurrentUser();
-        if (usernull != null) {
-            UserID = usernull.getUid();
+        if (mFirebaseUser != null && mFirebaseUser.isEmailVerified()) {
+            UserID = mFirebaseUser.getUid();
         } else {
             VerifyAuthentication();
         }
 
-        //intentGetEx = getIntent();
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_map, R.id.navigation_chat, R.id.navigation_configuration)
-                .setDrawerLayout(drawer)
-                .build();
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        btn_configuration.setOnClickListener(this);
+
     }
 
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (doubleBackToExitPressedOnce) {
-            //super.onBackPressed();
-            super.finish();
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
             return;
         }
         this.doubleBackToExitPressedOnce = true;
-        SnackBarCustom.Snack(getApplication(), relativeLayout, "Pressione Voltar Novamente Para Sair", Snackbar.LENGTH_SHORT);
+        SnackBarCustom.Snack(getApplication(), linearLayout, "Pressione Voltar Novamente Para Sair", Snackbar.LENGTH_SHORT);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -165,13 +140,29 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void VerifyAuthentication() {
-
-        if (FirebaseAuth.getInstance().getUid() == null) {
-            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 
+    @Override
+    public void onClick(View v) {
+        int id_btn = v.getId();
+        Intent intent;
+        switch (id_btn){
+            case R.id.btn_configuration:
+                intent = new Intent(getApplicationContext(), Configuration.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.btn_profile:
+                intent = new Intent(getApplicationContext(), UpdateProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                break;
+        }
+    }
 }

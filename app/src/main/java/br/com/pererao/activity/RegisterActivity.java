@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
@@ -104,6 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference(USUARIO);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         //ToolBar
         toolbar = findViewById(R.id.toolbar);
@@ -240,7 +242,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (Network.isConnected(getApplication())) {
             ConfirmaCampos();
         } else {
-            SnackBarCustom.Snack(getApplication(), relativeLayout, "Sem Internet No Momento", Snackbar.LENGTH_LONG);
+            SnackBarCustom.SnackSetAction(getApplication(), relativeLayout, R.color.snackBackground, false, "Sem Rede Disponível", "Conectar", Snackbar.LENGTH_INDEFINITE, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
         }
     }
 
@@ -393,54 +400,38 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void CreateUser(final String name, final String email, final String password) {
         try {
+            //Cria usuário
             mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        //Envia informações para a updateUserInfo
                         loadingDialog.dismissDialog();
 
-                        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                         assert mFirebaseUser != null;
-                        String id = mFirebaseUser.getUid();
+                        final String id = mFirebaseUser.getUid();
 
-                        if (mFirebaseUser != null) {
-                            boolean emailVerified = mFirebaseUser.isEmailVerified();
-                            if (!emailVerified) {
-                                Toast.makeText(getApplicationContext(), "E-mail não verificado", Toast.LENGTH_LONG).show();
-                                Log.i(TAG, "E-mail Não Verificado");
-                            } else if (emailVerified){
-                                Toast.makeText(getApplicationContext(), "E-mail já verificado", Toast.LENGTH_LONG).show();
-                                Log.i(TAG, "E-mail Já Verificado");
-                            }
-                            mFirebaseUser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
+                        //Envia email de verificação
+                        mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "E-mail De Verificação Enviado, Clique Sobre Ele Para Confirmar", Toast.LENGTH_SHORT).show();
-                                    Log.d(TAG, "Sucesso: E-mail Foi Enviado Com Sucesso");
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Falha: E-mail não foi enviado " + e.getMessage());
-                                }
-                            });
-                        }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Falha Ao Enviar E-mail de Verificação.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                         String userUrl = "default";
                         String status = "offline";
                         String search = name.toLowerCase();
                         float rating = 0;
-                        user = new User(id, name, email,password, userUrl, status, search, rating);
-                       /* HashMap<String, Object> hashMap = new HashMap<>();
-                        hashMap.put("id", id);
-                        hashMap.put("nomeUser", name);
-                        hashMap.put("emailUser", email);
-                        hashMap.put("userUrl", "default");
-                        hashMap.put("status", "offline");
-                        hashMap.put("search", name.toLowerCase());*/
+                        user = new User(id, name, email, password, userUrl, status, search, rating);
 
-                        /*hashMap*/
+                        //Adiciona dados do usuário no FB
                         mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -451,7 +442,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else {
                         loadingDialog.dismissDialog();
-                        Toast.makeText(getApplicationContext(), "Erro! Este Endereço De E-mail Já Está Sendo Usado Por Outra Conta", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Erro! Este Endereço De E-mail Já Está Sendo Usado Por Outra Conta.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

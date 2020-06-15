@@ -40,7 +40,6 @@
             android:textColorHint="?attr/TextColor"
             app:boxCornerRadiusBottomStart="15dp"
             app:boxCornerRadiusTopStart="15dp"
-            app:boxStrokeColor="?attr/White"
             app:boxStrokeWidth="2dp"
             app:endIconMode="clear_text"
             app:endIconTint="@android:color/holo_red_light">

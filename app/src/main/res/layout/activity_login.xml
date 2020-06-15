@@ -182,20 +182,6 @@
                 android:src="@drawable/ic_arrow_forward_white_24dp"
                 tools:ignore="ContentDescription" />
 
-            <Switch
-                android:id="@+id/DarkMode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/btn_submit_login"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                android:layout_marginBottom="90dp"
-                android:padding="15dp"
-                android:text="@string/dark_mode"
-                android:textColor="?attr/TextColor" />
-
         </RelativeLayout>
 
     </ScrollView>

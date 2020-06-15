@@ -53,9 +53,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
     implementation 'com.google.firebase:firebase-database:19.3.0'
 
-    //Circle ImageView
+    //Circle ImageView Glide e Hdodenhof
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.3.0'
 }

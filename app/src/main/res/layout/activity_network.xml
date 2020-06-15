@@ -10,6 +10,15 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar_toolbar" />
 
+    <ImageView
+        android:layout_marginTop="55dp"
+        android:id="@+id/iv_network"
+        android:src="@drawable/ic_network"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/app_bar"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
+
     <TextView
         android:id="@+id/txt_connect"
         android:layout_width="300dp"

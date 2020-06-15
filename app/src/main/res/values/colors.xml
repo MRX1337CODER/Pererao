@@ -5,4 +5,9 @@
     <color name="colorAccent">#FFE92A</color>
     <color name="black_opacity">#ED131313</color>
     <color name="snackBackground">#323030</color>
+
+
+
+    <color name="cardColor">#ffffff</color>
+    <color name="textcardColor">#3f3f3f</color>
 </resources>
