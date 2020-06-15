@@ -16,7 +16,7 @@
             layout="@layout/app_bar_toolbar" />
 
         <ImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/user_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@id/app_bar"
@@ -31,8 +31,8 @@
             android:id="@+id/img_more"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignEnd="@id/img_profile"
-            android:layout_alignBottom="@id/img_profile"
+            android:layout_alignEnd="@id/user_image"
+            android:layout_alignBottom="@id/user_image"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_more"
             tools:ignore="ContentDescription" />
@@ -42,7 +42,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/img_profile"
+            android:layout_below="@id/user_image"
             android:layout_marginStart="25dp"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="40dp"

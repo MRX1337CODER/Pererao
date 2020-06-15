@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="br.com.pererao.activity.ui.map.MapFragment"
+        android:name="br.com.pererao.activity.ui.map.MapActivity"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
 

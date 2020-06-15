@@ -43,7 +43,7 @@ public class Home extends Fragment {
 
         View root = inflater.inflate(R.layout.profile_activity, container, false);
         VerifyAuthentication();
-        img_user = root.findViewById(R.id.img_user);
+        img_user = root.findViewById(R.id.user_image);
         nameUser = root.findViewById(R.id.tv_name_user);
         emailUser = root.findViewById(R.id.tv_email_user);
         ratingBar = root.findViewById(R.id.ratingBarUser);

@@ -73,7 +73,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         ti_et_email = findViewById(R.id.ti_update_email);
         ti_et_password = findViewById(R.id.ti_update_password);
 
-        img_user = findViewById(R.id.img_user);
+        img_user = findViewById(R.id.user_image);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -88,7 +88,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
         if (_USERURL.equals("default")) {
             Glide.with(getApplicationContext())
-                    .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
+                    .load(R.drawable.ic_user_icon)//"https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
                     .transform(new CircleCrop())
                     .into(img_user);
         } else {
