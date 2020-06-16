@@ -77,45 +77,6 @@ public class LoginActivity extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        /*mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                //gotoDashboard();
-            }
-        };*/
-
-        /*if (mFirebaseUser == null){
-            Log.i(TAG, "User Nulo");
-        }
-        else if (mFirebaseAuth == null){
-            Log.i(TAG, "Auth Nulo");
-        }
-        else if (mFirebaseUser != null && !mFirebaseUser.isEmailVerified()){
-            Log.i(TAG, "User N Nulo && E-mail não verificado");
-        }
-        else if (mFirebaseAuth != null && !mFirebaseUser.isEmailVerified()){
-            Log.i(TAG, "Auth N Nulo e E-mail n verificado");
-        }
-        else if (mFirebaseUser != null && mFirebaseUser.isEmailVerified() || mFirebaseAuth.getCurrentUser() != null && mFirebaseUser.isEmailVerified()){
-            Log.i(TAG, "E-mail verificado <<<<<<<<<");
-            gotoDashboard();
-        }
-        else{
-            Log.i(TAG, "E-mail NNNNN verificado <<<<<<<<<");
-            gotoVerifyAccount();
-        }*//*
-        if (mFirebaseUser != null || mFirebaseAuth != null) {
-            assert mFirebaseUser != null;
-            if (mFirebaseUser.isEmailVerified()){
-                gotoDashboard();
-            }
-            else {
-                updateUI();
-            }
-            //updateUI(); //-------------------------------------------------------------------------------------------------------
-        }else {
-            Log.i(TAG, "Sem usuário");
-        }*/
 
         //ToolBar
         toolbar.setTitle(R.string.tv_login);
@@ -155,10 +116,14 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
         if (Fuser != null) {
             Fuser.reload();
-            Log.i(TAG, "Com Usuário");
-            gotoVerifyAccount();
-        }
-        else{
+            if (!mFirebaseUser.isEmailVerified()) {
+                Log.i(TAG, "Com Usuário e E-mail não verificado");
+                gotoVerifyAccount();
+            } else {
+                Log.i(TAG, "Com Usuário e E-mail verificado");
+                gotoDashboardActivity();
+            }
+        } else {
             Log.i(TAG, "Sem Usuário");
         }
     }
@@ -239,7 +204,7 @@ public class LoginActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(val)) {
             ti_et_email.setError("E-mail Obrigatório");
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {//!val.matches(checkEmail)) {
             ti_et_email.setError("E-mail Inválido");
             return false;
         } else {
@@ -264,17 +229,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /*private void updateUI(){
-        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-        if (user == null){
-            Log.i(TAG, "Usuario não logado");
-            return;
-        }
-        else {
-
-        }
-    }*/
-
     private void gotoVerifyAccount() {
         Intent intent = new Intent(LoginActivity.this, VerifyAccount.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -282,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
         finish();
     }
 
-    private void gotoDashboard() {
+    private void gotoDashboardActivity() {
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

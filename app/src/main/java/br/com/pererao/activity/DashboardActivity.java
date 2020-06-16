@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,8 +32,12 @@ import com.google.firebase.database.ValueEventListener;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.ui.chat.ChatActivity;
 import br.com.pererao.activity.ui.configuration.Configuration;
+import br.com.pererao.activity.ui.home.HomeActivity;
+import br.com.pererao.activity.ui.map.MapActivity;
 import br.com.pererao.model.User;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DashboardActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -44,7 +46,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     boolean doubleBackToExitPressedOnce = false;
     LinearLayout linearLayout;
     TextView tv_username, tv_email;
-    ImageView user_image;
+    CircleImageView user_image;
     Button btn_profile, btn_maps, btn_chat, btn_configuration;
     private static final String TAG = "DashboardActivity";
     private static final String USUARIO = "Usuario";
@@ -81,9 +83,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
 
+        onStart();
         //ToolBar
+        this.toolbar.setTitle("Painel");
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Painel");
 
         if (mFirebaseUser == null) {
             gotoLoginActivity();
@@ -100,15 +103,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                     tv_email.setText(user.getEmailUser());
 
                     if (user.getUserUrl().equals("default")) {
-                        Glide.with(getApplicationContext())
-                                .load(R.drawable.ic_user_icon)
-                                .transform(new CircleCrop())
-                                .into(user_image);
-                    }
-                    else {
+                        user_image.setImageResource(R.drawable.ic_user_icon);
+                    } else {
                         Glide.with(getApplicationContext())
                                 .load(user.getUserUrl())
-                                .transform(new CircleCrop())
                                 .into(user_image);
                     }
                 }
@@ -120,6 +118,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             });
         }
 
+        btn_profile.setOnClickListener(this);
+        btn_maps.setOnClickListener(this);
+        btn_chat.setOnClickListener(this);
         btn_configuration.setOnClickListener(this);
 
     }
@@ -128,15 +129,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     protected void onStart() {
         super.onStart();
         FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
-        Fuser.reload();
-        if (Fuser == null) {
-            gotoLoginActivity();
-        } else {
+        if (Fuser != null) {
+            Fuser.reload();
             if (!Fuser.isEmailVerified()) {
                 gotoVerifyAccount();
             } else {
                 Log.i(TAG, "Usuário: " + Fuser.getUid() + "\nE-mail Verified:" + Fuser.isEmailVerified());
             }
+        } else {
+            gotoLoginActivity();
         }
     }
 
@@ -201,6 +202,26 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         gotoLoginActivity();
     }
 
+    @Override
+    public void onClick(View v) {
+        int id_btn = v.getId();
+        switch (id_btn) {
+            case R.id.btn_profile:
+                gotoProfileActivity();
+                break;
+            case R.id.btn_maps:
+                gotoMapActivity();
+                break;
+            case R.id.btn_chat:
+                gotoChatActivity();
+                break;
+            case R.id.btn_configuration:
+                gotoConfigurationActivity();
+                break;
+        }
+    }
+
+    //Activity's
     private void gotoLoginActivity() {
         Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -215,23 +236,31 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         finish();
     }
 
-    @Override
-    public void onClick(View v) {
-        int id_btn = v.getId();
-        Intent intent;
-        switch (id_btn) {
-            case R.id.btn_configuration:
-                intent = new Intent(getApplicationContext(), Configuration.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                break;
-            case R.id.btn_profile:
-                intent = new Intent(getApplicationContext(), UpdateProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                break;
-        }
+    private void gotoProfileActivity() {
+        Intent intent = new Intent(DashboardActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void gotoMapActivity() {
+        Intent intent = new Intent(DashboardActivity.this, MapActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void gotoChatActivity() {
+        Intent intent = new Intent(DashboardActivity.this, ChatActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void gotoConfigurationActivity() {
+        Intent intent = new Intent(DashboardActivity.this, Configuration.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

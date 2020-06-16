@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/BackgroundColor"
+    android:background="?attr/BackgroundColorCard"
     tools:context=".activity.UpdateProfileActivity">
 
     <RelativeLayout
@@ -15,17 +15,18 @@
             android:id="@+id/app_bar"
             layout="@layout/app_bar_toolbar" />
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_image"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_below="@id/app_bar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:background="#000"
-            android:layout_marginEnd="30dp"
-            tools:ignore="ContentDescription"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:src="@drawable/ic_user_icon"
+            app:civ_border_color="?attr/WhiteToBlack"
+            app:civ_border_width="2.5dp"
+            app:civ_circle_background_color="?attr/WhiteToBlack"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/img_more"

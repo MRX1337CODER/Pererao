@@ -105,8 +105,19 @@ public class Configuration extends AppCompatActivity {
 
     }
 
-    public void restartApp() {
+    public void onBackPressed() {
+        gotoDashboardActivity();
+    }
+
+    private void gotoDashboardActivity(){
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    public void restartApp() {
+        Intent intent = new Intent(getApplicationContext(), Configuration.class);
         startActivity(intent);
         finish();
     }

@@ -27,6 +27,9 @@
         <item name="ButtonColor">@android:color/black</item>
         <item name="White">#fff</item>
         <item name="textSplash">@android:color/white</item>
+
+        <item name="BlackToWhite">#FF000000</item>
+        <item name="WhiteToBlack">#FFFFFF</item>
     </style>
     <!--Default Theme-->
 
@@ -57,6 +60,9 @@
         <item name="ButtonColor">@android:color/white</item>
         <item name="White">#161616</item>
         <item name="textSplash">@color/colorPrimary</item>
+
+        <item name="BlackToWhite">#FFFFFF</item>
+        <item name="WhiteToBlack">#000000</item>
     </style>
     <!--Dark Theme-->
 

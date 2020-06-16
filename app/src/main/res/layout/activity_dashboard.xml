@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical">
 
         <include
@@ -34,11 +35,14 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_user_icon"
+                app:civ_border_color="?attr/WhiteToBlack"
+                app:civ_border_width="2.5dp"
+                app:civ_circle_background_color="?attr/WhiteToBlack"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -46,7 +50,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxWidth="300dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text="@string/hint_name_register"
+                android:textAlignment="viewStart"
                 android:textColor="?attr/TextColor"
                 android:textSize="20sp" />
 
@@ -55,188 +66,213 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:maxWidth="300dp"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
                 android:text="@string/hint_email"
+                android:textAlignment="viewStart"
                 android:textColor="?attr/TextColor"
                 android:textSize="16sp" />
 
         </LinearLayout>
 
-        <GridLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="10dp"
-            android:alignmentMode="alignMargins"
-            android:columnCount="2"
-            android:columnOrderPreserved="false"
-            android:rowCount="4"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            android:padding="10dp"
             tools:ignore="UselessParent">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?attr/BackgroundColor"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="5dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:clipToPadding="false"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btn_profile"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent" />
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/BackgroundColor"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="5dp">
 
-                <LinearLayout
+                    <Button
+                        android:id="@+id/btn_profile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="18dp"
+                            android:src="@drawable/ic_user_outline"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/profile"
+                            android:textColor="?attr/TextColor"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/BackgroundColor"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="5dp">
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="18dp"
-                        android:src="@drawable/ic_user_outline"
-                        tools:ignore="ContentDescription" />
+                    <Button
+                        android:id="@+id/btn_maps"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/profile"
-                        android:textColor="?attr/TextColor"
-                        android:textSize="18sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="UseCompoundDrawables">
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="18dp"
+                            android:src="@drawable/ic_map"
+                            tools:ignore="ContentDescription" />
 
-            </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/title_map"
+                            android:textColor="?attr/TextColor"
+                            android:textSize="18sp" />
 
+                    </LinearLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?attr/BackgroundColor"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="5dp">
+                </androidx.cardview.widget.CardView>
 
-                <Button
-                    android:id="@+id/btn_maps"
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="190dp"
+                android:clipToPadding="false"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent" />
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/BackgroundColor"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="5dp">
 
-                <LinearLayout
+                    <Button
+                        android:id="@+id/btn_chat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="18dp"
+                            android:src="@drawable/ic_chat"
+                            tools:ignore="ContentDescription" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/title_chat"
+                            android:textColor="?attr/TextColor"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/BackgroundColor"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="5dp">
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="18dp"
-                        android:src="@drawable/ic_map"
-                        tools:ignore="ContentDescription" />
+                    <Button
+                        android:id="@+id/btn_configuration"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@android:color/transparent" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/title_map"
-                        android:textColor="?attr/TextColor"
-                        android:textSize="18sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="UseCompoundDrawables">
 
-                </LinearLayout>
+                        <ImageView
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="18dp"
+                            android:src="@drawable/ic_settings"
+                            tools:ignore="ContentDescription" />
 
-            </androidx.cardview.widget.CardView>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:text="@string/title_configuration"
+                            android:textColor="?attr/TextColor"
+                            android:textSize="18sp" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?attr/BackgroundColor"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="5dp">
+                    </LinearLayout>
 
-                <Button
-                    android:id="@+id/btn_chat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent" />
+                </androidx.cardview.widget.CardView>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables">
+            </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="18dp"
-                        android:src="@drawable/ic_chat"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/title_chat"
-                        android:textColor="?attr/TextColor"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_margin="10dp"
-                app:cardBackgroundColor="?attr/BackgroundColor"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="5dp">
-
-                <Button
-                    android:id="@+id/btn_configuration"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    tools:ignore="UseCompoundDrawables">
-
-                    <ImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_marginTop="18dp"
-                        android:src="@drawable/ic_settings"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/title_configuration"
-                        android:textColor="?attr/TextColor"
-                        android:textSize="18sp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </GridLayout>
+        </LinearLayout>
 
     </LinearLayout>
 

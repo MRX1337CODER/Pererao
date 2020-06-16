@@ -18,6 +18,9 @@
         <attr name="White" format="color" />
         <attr name="textSplash" format="color" />
 
+        <attr name="BlackToWhite" format="color" />
+        <attr name="WhiteToBlack" format="color" />
+
         <attr name="textColorEditText" format="color" />
 
     </declare-styleable>

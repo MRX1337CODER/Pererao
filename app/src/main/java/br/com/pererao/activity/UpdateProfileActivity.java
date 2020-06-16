@@ -24,12 +24,13 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UpdateProfileActivity extends AppCompatActivity {
 
     TextInputEditText et_username, et_email, et_password;
     TextInputLayout ti_et_username, ti_et_email, ti_et_password;
-    ImageView img_user;
+    CircleImageView img_user;
     private static final String USUARIO = "Usuario";
     DatabaseReference mDatabaseReference;
     FirebaseUser mFirebaseUser;
@@ -37,7 +38,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
     Toolbar toolbar;
     LoadingDialog loadingDialog = new LoadingDialog(UpdateProfileActivity.this);
     SharedPref sharedPref;
-    boolean doubleBackToExitPressedOnce = false;
     String _USERNAME, _EMAIL, _PASSWORD, _USERURL, _SEARCH;
     Intent intentGet;
 
@@ -87,14 +87,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
         _SEARCH = intentGet.getStringExtra("search");
 
         if (_USERURL.equals("default")) {
-            Glide.with(getApplicationContext())
-                    .load(R.drawable.ic_user_icon)//"https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
-                    .transform(new CircleCrop())
-                    .into(img_user);
+            img_user.setImageResource(R.drawable.ic_user_icon);
         } else {
             Glide.with(getApplicationContext())
                     .load(_USERURL)
-                    .transform(new CircleCrop())
                     .into(img_user);
         }
 

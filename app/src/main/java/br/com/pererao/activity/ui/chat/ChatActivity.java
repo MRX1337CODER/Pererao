@@ -1,13 +1,12 @@
 package br.com.pererao.activity.ui.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,10 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.pererao.R;
+import br.com.pererao.activity.DashboardActivity;
 import br.com.pererao.adapter.UserAdapter;
 import br.com.pererao.model.User;
 
-public class ChatFragment extends Fragment {
+public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
@@ -37,16 +37,16 @@ public class ChatFragment extends Fragment {
     FirebaseUser mFirebaseUser;
     DatabaseReference mDatabaseReference;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_chat);
 
-        View root = inflater.inflate(R.layout.fragment_chat, container, false);
+        relativeLayout = findViewById(R.id.relative_layout);
 
-        relativeLayout = root.findViewById(R.id.relative_layout);
-
-        recyclerView = root.findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
@@ -55,7 +55,6 @@ public class ChatFragment extends Fragment {
 
         readUsers();
 
-        return root;
     }
 
     private void readUsers() {
@@ -75,7 +74,7 @@ public class ChatFragment extends Fragment {
                         mUser.add(user);
                     }
 
-                    userAdapter = new UserAdapter(getContext(), mUser);
+                    userAdapter = new UserAdapter(getApplicationContext(), mUser);
                     recyclerView.setAdapter(userAdapter);
                 }
             }
@@ -85,5 +84,16 @@ public class ChatFragment extends Fragment {
 
             }
         });
+    }
+
+    public void onBackPressed() {
+        gotoDashboardActivity();
+    }
+
+    private void gotoDashboardActivity(){
+        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -40,10 +40,11 @@ import br.com.pererao.SharedPref;
 import br.com.pererao.adapter.MessageAdapter;
 import br.com.pererao.model.Chat;
 import br.com.pererao.model.User;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageActivity extends AppCompatActivity {
 
-    ImageView profile_user_image_chat;
+    CircleImageView profile_user_image_chat;
     TextView username_chat;
     ImageButton imb_send_message;
     TextInputLayout ti_ed_message_user;
@@ -54,8 +55,7 @@ public class MessageActivity extends AppCompatActivity {
     Intent intent;
     Toolbar toolbar;
     SharedPref sharedPref;
-    String id, messageDate;
-    boolean doubleBackToExitPressedOnce = false;
+    String id;
 
     MessageAdapter messageAdapter;
     List<Chat> mChat;
@@ -115,16 +115,13 @@ public class MessageActivity extends AppCompatActivity {
                 assert user != null;
                 username_chat.setText(user.getNomeUser());
                 if (user.getUserUrl().equals("default")) {
-                    Glide.with(getApplicationContext())
-                            .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
-                            .transform(new CircleCrop())
-                            .into(profile_user_image_chat);
+                    profile_user_image_chat.setImageResource(R.drawable.ic_user_icon);
                 } else {
                     Glide.with(getApplicationContext())
                             .load(user.getUserUrl())
-                            .transform(new CircleCrop())
                             .into(profile_user_image_chat);
                 }
+
                 // }
                 Chat c = dataSnapshot.getValue(Chat.class);
                 assert c != null;
@@ -228,7 +225,7 @@ public class MessageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            gotoProfile();
+        gotoProfile();
     }
 
     private void gotoProfile() {

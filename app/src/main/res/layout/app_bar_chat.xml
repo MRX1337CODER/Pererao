@@ -19,24 +19,32 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/img_user_chat"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    tools:ignore="ContentDescription"
-                    tools:srcCompat="@tools:sample/avatars" />
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_user_icon"
+                    app:civ_border_color="?attr/WhiteToBlack"
+                    app:civ_border_width="1.5dp"
+                    app:civ_circle_background_color="?attr/WhiteToBlack" />
 
                 <TextView
                     android:id="@+id/username_chat"
                     android:layout_width="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="15dp"
+                    android:ellipsize="marquee"
+                    android:fadingEdge="horizontal"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:maxWidth="180dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:textColor="#fff"
                     android:textSize="18sp"
                     android:textStyle="bold" />

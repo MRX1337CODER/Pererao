@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -56,15 +57,16 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         //TODO: Declarações
         et_new_password = findViewById(R.id.et_pass);
-
         ti_et_new_password = findViewById(R.id.ti_pass);
 
         btn_goto = findViewById(R.id.btn_goto);
         imb_NewPassCode = findViewById(R.id.btn_newPass);
         relativeLayout = findViewById(R.id.rl_newPass);
+        toolbar = findViewById(R.id.toolbar);
+
+        //Firebase
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.reset_password);
         //ToolBar
         setSupportActionBar(toolbar);
@@ -158,12 +160,13 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private boolean validateEmailResetPass() {
         String val = ti_et_new_password.getEditText().getText().toString().trim();
-        String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+        //String checkEmail = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+
         if (TextUtils.isEmpty(val)) {
             ti_et_new_password.setError("E-mail Obrigatório");
             ti_et_new_password.requestFocus();
             return false;
-        } else if (!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {//!val.matches(checkEmail)) {
             ti_et_new_password.setError("E-mail Inválido");
             ti_et_new_password.requestFocus();
             return false;
