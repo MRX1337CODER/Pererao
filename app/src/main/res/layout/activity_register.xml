@@ -7,17 +7,6 @@
     android:background="?attr/BackgroundColor"
     tools:context=".activity.RegisterActivity">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="50dp"
-        android:src="@drawable/ic_arrow_back_white_24dp"
-        android:tint="?attr/White"
-        app:backgroundTint="?attr/TextColor" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -63,6 +52,28 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/user_image"
+                                android:layout_width="150dp"
+                                android:layout_height="150dp"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="15dp"
+                                android:src="@drawable/ic_user_icon"
+                                app:civ_border_color="?attr/WhiteToBlack"
+                                app:civ_border_width="2.5dp"
+                                app:civ_circle_background_color="?attr/WhiteToBlack"
+                                tools:ignore="ContentDescription" />
+
+                            <ImageView
+                                android:id="@+id/img_more"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignEnd="@id/user_image"
+                                android:layout_alignBottom="@id/user_image"
+                                android:layout_centerHorizontal="true"
+                                android:background="@drawable/ic_more"
+                                tools:ignore="ContentDescription" />
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/ti_username_register"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -72,6 +83,7 @@
                             android:layout_marginLeft="25dp"
                             android:layout_marginTop="35dp"
                             android:layout_marginEnd="25dp"
+                            android:layout_below="@id/user_image"
                             android:layout_marginRight="25dp"
                             android:hint="@string/hint_name_register"
                             app:boxStrokeColor="#FF191919"
@@ -91,7 +103,6 @@
                                 android:layout_height="match_parent"
                                 android:inputType="textPersonName"
                                 android:padding="13dp"
-                                android:digits="abcdefghijtklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                 android:textColor="?attr/textColorEditText" />
 
                         </com.google.android.material.textfield.TextInputLayout>

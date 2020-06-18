@@ -22,6 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 import br.com.pererao.R;
 import br.com.pererao.activity.DashboardActivity;
 import br.com.pererao.activity.LoginActivity;
+import br.com.pererao.activity.VerifyAccount;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,7 +42,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
 
-        gotoLoginActivity();
         user_image = findViewById(R.id.user_image);
         nameUser = findViewById(R.id.tv_name_user);
         emailUser = findViewById(R.id.tv_email_user);
@@ -55,14 +55,14 @@ public class HomeActivity extends AppCompatActivity {
             UserID = usernull.getUid();
         }
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
-        mDatabaseReference.addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        assert user != null;
-                        if (!(user.getNomeUser() == null) || !(user.getEmailUser() == null)) {
+        if (mFirebaseUser != null) {
+            mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
+            mDatabaseReference.addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = dataSnapshot.getValue(User.class);
+                            assert user != null;
                             nameUser.setText(user.getNomeUser());
                             emailUser.setText(user.getEmailUser());
                             if (user.getUserUrl().equals("default")) {
@@ -72,17 +72,29 @@ public class HomeActivity extends AppCompatActivity {
                                         .load(user.getUserUrl())
                                         .into(user_image);
                             }
-                        } else if (user.getNomeUser() == null || user.getEmailUser() == null ){//|| mFirebaseUser.getUid() == null) {
-                            gotoLoginActivity();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e("HomeActivity", "Erro ao ler o valor: " + databaseError.toException());
                         }
                     }
+            );
+        } else {
+            gotoLoginActivity();
+        }
+    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        Log.e("HomeActivity", "Erro ao ler o valor: " + databaseError.toException());
-                    }
-                }
-        );
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mFirebaseUser != null) {
+            if (!mFirebaseUser.isEmailVerified()) {
+                gotoVerifyAccount();
+            }
+        } else {
+            gotoLoginActivity();
+        }
 
     }
 
@@ -90,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
         gotoDashboardActivity();
     }
 
-    private void gotoDashboardActivity(){
+    private void gotoDashboardActivity() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -99,6 +111,13 @@ public class HomeActivity extends AppCompatActivity {
 
     private void gotoLoginActivity() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void gotoVerifyAccount() {
+        Intent intent = new Intent(getApplicationContext(), VerifyAccount.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

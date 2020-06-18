@@ -38,110 +38,159 @@
             android:background="@drawable/ic_more"
             tools:ignore="ContentDescription" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ti_update_username"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <LinearLayout
+            android:id="@+id/ll_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/user_image"
-            android:layout_marginStart="25dp"
-            android:layout_marginLeft="25dp"
             android:layout_marginTop="40dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginRight="25dp"
-            android:hint="@string/hint_name_register"
-            app:boxStrokeColor="#FF191919"
-            app:boxStrokeWidth="2dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@android:color/holo_red_light"
-            app:errorEnabled="true"
-            app:errorIconTint="@android:color/holo_red_light"
-            app:hintTextColor="@android:color/darker_gray"
-            app:startIconDrawable="@drawable/ic_person__black_24dp"
-            app:startIconTint="@android:color/black">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_update_username"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ti_update_username"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="textPersonName"
-                android:padding="13dp"
-                android:textColor="?attr/textColorEditText" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:hint="@string/hint_name_register"
+                app:boxStrokeColor="#FF191919"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@android:color/holo_red_light"
+                app:errorEnabled="true"
+                app:errorIconTint="@android:color/holo_red_light"
+                app:hintTextColor="@android:color/darker_gray"
+                app:startIconDrawable="@drawable/ic_person__black_24dp"
+                app:startIconTint="@android:color/black">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_update_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:padding="13dp"
+                    android:textColor="?attr/textColorEditText" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ti_update_email"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ti_update_username"
-            android:layout_marginStart="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginRight="25dp"
-            android:hint="@string/hint_email"
-            app:boxStrokeColor="#FF191919"
-            app:boxStrokeWidth="2dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@android:color/holo_red_light"
-            app:errorEnabled="true"
-            app:errorIconTint="@android:color/holo_red_light"
-            app:hintTextColor="@android:color/darker_gray"
-            app:startIconDrawable="@drawable/ic_email_outline_black_24dp"
-            app:startIconTint="@android:color/black">
+            android:layout_below="@id/ll_username"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_update_email"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="textEmailAddress"
-                android:padding="13dp"
-                android:textColor="?attr/textColorEditText" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ti_update_email"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/hint_email"
+                android:visibility="visible"
+                app:boxStrokeColor="#FF191919"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="clear_text"
+                app:endIconTint="@android:color/holo_red_light"
+                app:errorEnabled="true"
+                app:errorIconTint="@android:color/holo_red_light"
+                app:hintTextColor="@android:color/darker_gray"
+                app:startIconDrawable="@drawable/ic_email_outline_black_24dp"
+                app:startIconTint="@android:color/black">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_update_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:inputType="textEmailAddress"
+                    android:padding="13dp"
+                    android:textColor="?attr/textColorEditText" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ti_update_password"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/btn_edit_email"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/border_radius_leve_blue"
+                android:src="@drawable/ic_edit_black_24dp"
+                tools:ignore="ContentDescription,PrivateResource" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ti_update_email"
-            android:layout_marginStart="25dp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginRight="25dp"
-            android:hint="@string/hint_password"
-            app:boxStrokeColor="#FF191919"
-            app:boxStrokeWidth="2dp"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="password_toggle"
-            app:errorEnabled="true"
-            app:errorIconTint="@android:color/holo_red_light"
-            app:hintTextColor="@android:color/darker_gray"
-            app:startIconDrawable="@drawable/ic_lock_outline_black_24dp"
-            app:startIconTint="@android:color/black">
+            android:layout_below="@id/ll_email"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_update_password"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="textPassword"
-                android:padding="13dp"
-                android:textColor="?attr/textColorEditText" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ti_update_password"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:focusable="false"
+                android:hint="@string/hint_password"
+                android:visibility="visible"
+                app:boxStrokeColor="#FF191919"
+                app:boxStrokeWidth="2dp"
+                app:boxStrokeWidthFocused="2dp"
+                app:endIconMode="password_toggle"
+                app:errorEnabled="true"
+                app:errorIconTint="@android:color/holo_red_light"
+                app:hintTextColor="@android:color/darker_gray"
+                app:startIconDrawable="@drawable/ic_lock_outline_black_24dp"
+                app:startIconTint="@android:color/black">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_update_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:inputType="textPassword"
+                    android:padding="13dp"
+                    android:textColor="?attr/textColorEditText" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/btn_edit_password"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/border_radius_leve_blue"
+                android:src="@drawable/ic_edit_black_24dp"
+                tools:ignore="ContentDescription,PrivateResource" />
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_update_profile_data"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ti_update_password"
+            android:layout_below="@id/ll_password"
             android:layout_marginStart="25dp"
             android:layout_marginLeft="25dp"
             android:layout_marginTop="35dp"

@@ -68,7 +68,6 @@
                 android:layout_marginTop="28dp"
                 android:numStars="5"
                 android:background="#fff"
-                android:secondaryProgress="#000"
                 android:progressBackgroundTint="#888"
                 android:rating="2.5"
                 android:stepSize="0.5" />

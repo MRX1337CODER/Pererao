@@ -1,5 +1,6 @@
 package br.com.pererao.activity.ui.chat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RelativeLayout;
@@ -73,8 +74,8 @@ public class ChatActivity extends AppCompatActivity {
                     if (!user.getId().equals(firebaseUser.getUid())) {
                         mUser.add(user);
                     }
-
-                    userAdapter = new UserAdapter(getApplicationContext(), mUser);
+                    Context context = getApplicationContext();
+                    userAdapter = new UserAdapter(context, mUser);
                     recyclerView.setAdapter(userAdapter);
                 }
             }

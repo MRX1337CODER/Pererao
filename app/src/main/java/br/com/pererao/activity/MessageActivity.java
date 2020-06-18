@@ -37,6 +37,7 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
+import br.com.pererao.activity.ui.chat.ChatActivity;
 import br.com.pererao.adapter.MessageAdapter;
 import br.com.pererao.model.Chat;
 import br.com.pererao.model.User;
@@ -93,11 +94,11 @@ public class MessageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.toolbar.setTitle("");
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gotoProfile();
+                gotoChatActivity();
             }
         });
 
@@ -125,8 +126,6 @@ public class MessageActivity extends AppCompatActivity {
                 // }
                 Chat c = dataSnapshot.getValue(Chat.class);
                 assert c != null;
-                //CharSequence cs = DateFormat.format("dd/MM/yyyy (HH:mm:ss)",c.getMessageTime());
-                //String dateMessage = cs.toString();
                 long dateMessage = c.getMessageTime();
                 readMessage(mFirebaseUser.getUid(), id, user.getUserUrl(), dateMessage);
 
@@ -149,9 +148,6 @@ public class MessageActivity extends AppCompatActivity {
                 if (!(TextUtils.isEmpty(msg))) {
 
                     long messageTime = new Date().getTime();
-                    // CharSequence dateChar = DateFormat.format("dd/MM/yyyy (HH:mm:ss)", messageTime);
-                    //String dateMessage = dateChar.toString();
-                    //Log.i("DATESTRINGCHARSEQUENCE", "STRING: " + dateMessage + " CHAR: " + dateChar + " LONG: " + messageTime);
 
                     sendMessage(msg, mFirebaseUser.getUid(), id, messageTime);
                 } else {
@@ -225,11 +221,11 @@ public class MessageActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        gotoProfile();
+        gotoChatActivity();
     }
 
-    private void gotoProfile() {
-        Intent intent = new Intent(MessageActivity.this, DashboardActivity.class);
+    private void gotoChatActivity() {
+        Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();

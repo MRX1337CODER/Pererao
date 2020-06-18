@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,9 +87,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         this.toolbar.setTitle("Painel");
         setSupportActionBar(toolbar);
 
-        if (mFirebaseUser == null) {
-            gotoLoginActivity();
-        } else {
+        if (mFirebaseUser != null) {
             mDatabaseReference.child(mFirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -116,6 +113,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                 }
             });
+        } else {
+            gotoLoginActivity();
         }
 
         btn_profile.setOnClickListener(this);
@@ -128,17 +127,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
-        if (Fuser != null) {
-            Fuser.reload();
-            if (!Fuser.isEmailVerified()) {
+        //FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
+        if (mFirebaseUser != null) {
+            if (!mFirebaseUser.isEmailVerified()) {
                 gotoVerifyAccount();
-            } else {
-                Log.i(TAG, "Usuário: " + Fuser.getUid() + "\nE-mail Verified:" + Fuser.isEmailVerified());
             }
         } else {
             gotoLoginActivity();
         }
+
     }
 
     public void onBackPressed() {

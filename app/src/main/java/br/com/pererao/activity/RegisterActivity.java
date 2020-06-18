@@ -1,18 +1,19 @@
 package br.com.pererao.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -20,11 +21,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,7 +35,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 import br.com.pererao.Network;
@@ -41,26 +47,28 @@ import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
 import br.com.pererao.model.User;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private TextInputEditText et_fullname, et_email, et_confirm_email, et_password, et_confirm_password;
     TextInputLayout ti_et_name, ti_et_email, ti_et_confirm_email, ti_et_password, ti_et_confirm_password;
     ImageButton imb_register;
-    MaterialButton btn_goto_login;
+    CircleImageView img_user;
+    ImageView img_more;
+    private Uri imageUri;
+    MaterialButton btn_gotoLoginActivity;
     String UserID;
     static final String USUARIO = "Usuario";
     RelativeLayout relativeLayout;
     private static final String TAG = "RegisterActivityTAG";
+    private static final int REQUEST_IMAGE_CAPTURE = 100;
     LoadingDialog loadingDialog = new LoadingDialog(RegisterActivity.this);
     SharedPref sharedPref;
     Toolbar toolbar;
     boolean doubleBackToExitPressedOnce = false;
-    FloatingActionButton fab;
-    private float CLICK_DRAG_TOLERANCE = 15, downRawX, downRawY, dX, dY;
     User user;
     //Firebase
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
     FirebaseDatabase mFirebaseDatabase;
@@ -82,8 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         //TODO: Declarações
-        fab = findViewById(R.id.fab);
-
         ti_et_name = findViewById(R.id.ti_username_register);
         ti_et_email = findViewById(R.id.ti_email_register);
         ti_et_confirm_email = findViewById(R.id.ti_confirm_email_register);
@@ -96,8 +102,10 @@ public class RegisterActivity extends AppCompatActivity {
         et_password = findViewById(R.id.et_password_register);
         et_confirm_password = findViewById(R.id.et_confirm_password_register);
 
-        btn_goto_login = findViewById(R.id.btn_goto_login);
+        btn_gotoLoginActivity = findViewById(R.id.btn_goto_login);
         imb_register = findViewById(R.id.imb_register);
+        img_user = findViewById(R.id.user_image);
+        img_more = findViewById(R.id.img_more);
 
         relativeLayout = findViewById(R.id.rl_register);
         //Firebase
@@ -111,21 +119,12 @@ public class RegisterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-
-
-
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-                if (firebaseUser == null) {
-                    return;
-                }
-
+            public void onClick(View v) {
+                gotoLoginActivity();
             }
-        };
+        });
 
         //Setando UID aleatorio pelo firebase
         FirebaseUser usernull = FirebaseAuth.getInstance().getCurrentUser();
@@ -133,77 +132,7 @@ public class RegisterActivity extends AppCompatActivity {
             UserID = usernull.getUid();
         }
 
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        fab.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-
-                int action = motionEvent.getAction();
-                if (action == MotionEvent.ACTION_DOWN) {
-
-                    downRawX = motionEvent.getRawX();
-                    downRawY = motionEvent.getRawY();
-                    dX = view.getX() - downRawX;
-                    dY = view.getY() - downRawY;
-
-                    return true; // Consumed
-
-                } else if (action == MotionEvent.ACTION_MOVE) {
-
-                    int viewWidth = view.getWidth();
-                    int viewHeight = view.getHeight();
-
-                    View viewParent = (View) view.getParent();
-                    int parentWidth = viewParent.getWidth();
-                    int parentHeight = viewParent.getHeight();
-
-                    float newX = motionEvent.getRawX() + dX;
-                    newX = Math.max(layoutParams.leftMargin, newX); // Don't allow the FAB past the left hand side of the parent
-                    newX = Math.min(parentWidth - viewWidth - layoutParams.rightMargin, newX); // Don't allow the FAB past the right hand side of the parent
-
-                    float newY = motionEvent.getRawY() + dY;
-                    newY = Math.max(layoutParams.topMargin, newY); // Don't allow the FAB past the top of the parent
-                    newY = Math.min(parentHeight - viewHeight - layoutParams.bottomMargin, newY); // Don't allow the FAB past the bottom of the parent
-
-                    view.animate()
-                            .x(newX)
-                            .y(newY)
-                            .setDuration(0)
-                            .start();
-
-                    return true; // Consumed
-
-                } else if (action == MotionEvent.ACTION_UP) {
-
-                    float upRawX = motionEvent.getRawX();
-                    float upRawY = motionEvent.getRawY();
-
-                    float upDX = upRawX - downRawX;
-                    float upDY = upRawY - downRawY;
-
-                    if (Math.abs(upDX) < CLICK_DRAG_TOLERANCE && Math.abs(upDY) < CLICK_DRAG_TOLERANCE) { // A click
-                        goto_login();
-
-                    } else { // A drag
-                        return true; // Consumed
-                    }
-
-                } else {
-                    goto_login();
-                }
-
-                return true;
-            }
-        });
-
+        //TODO:Ações
         /*Botão do cadastro*/
         imb_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,12 +142,70 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
         /*Voltar para a activity de login*/
-        btn_goto_login.setOnClickListener(new View.OnClickListener() {
+        btn_gotoLoginActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goto_login();
+                gotoLoginActivity();
             }
         });
+
+        img_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePictureIntent();
+            }
+        });
+    }
+
+    private void takePictureIntent() {
+        Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (photo.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(photo, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            uploadImage(imageBitmap);
+        }
+    }
+
+    private void uploadImage(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        final StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo/" + mFirebaseUser.getUid());
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageUp = baos.toByteArray();
+        UploadTask upload = mStorageReference.putBytes(imageUp);
+        loadingDialog.startLoadingDialog();
+        upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                loadingDialog.dismissDialog();
+                if (task.isSuccessful()){
+                    mStorageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            Glide.with(getApplicationContext())
+                                    .load(uri)
+                                    .into(img_user);
+                            Toast.makeText(getApplicationContext(), "Imagem Carregada Com Sucesso", Toast.LENGTH_SHORT).show();
+                            //img_user.setImageBitmap(imageBitmap);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Erro: " + e.getMessage());
+                            Toast.makeText(getApplicationContext(), "Falha Ao Carregar Imagem", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     @Override
@@ -227,7 +214,7 @@ public class RegisterActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            goto_login();
+            gotoLoginActivity();
         }
 
         return super.onOptionsItemSelected(item);
@@ -311,7 +298,7 @@ public class RegisterActivity extends AppCompatActivity {
             ti_et_email.setError("E-mail Obrigatório");
             ti_et_email.requestFocus();
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//(!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {//(!val.matches(checkEmail)) {
             ti_et_email.setError("E-mail Inválido");
             ti_et_email.requestFocus();
             return false;
@@ -330,7 +317,7 @@ public class RegisterActivity extends AppCompatActivity {
             ti_et_confirm_email.setError("Confirmação De E-mail Obrigatório");
             ti_et_confirm_email.requestFocus();
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()){//!val.matches(checkEmail)) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {//!val.matches(checkEmail)) {
             ti_et_confirm_email.setError("E-mail Inválido");
             ti_et_confirm_email.requestFocus();
             return false;
@@ -412,13 +399,12 @@ public class RegisterActivity extends AppCompatActivity {
      */
     public void CreateUser(final String name, final String email, final String password) {
         try {
+            imb_register.setEnabled(false);
             //Cria usuário
             mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        loadingDialog.dismissDialog();
-
                         mFirebaseUser = mFirebaseAuth.getCurrentUser();
                         assert mFirebaseUser != null;
                         final String id = mFirebaseUser.getUid();
@@ -443,17 +429,18 @@ public class RegisterActivity extends AppCompatActivity {
                         String search = name.toLowerCase();
                         float rating = 0;
                         user = new User(id, name, email, password, userUrl, status, search, rating);
-
+                        loadingDialog.dismissDialog();
                         //Adiciona dados do usuário no FB
                         mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 LimparCampos();
-                                updateUI();
+                                gotoVerifyAccount();
                             }
                         });
 
                     } else {
+                        imb_register.setEnabled(true);
                         loadingDialog.dismissDialog();
                         Toast.makeText(getApplicationContext(), "Erro! Este Endereço De E-mail Já Está Sendo Usado Por Outra Conta.", Toast.LENGTH_SHORT).show();
                     }
@@ -466,23 +453,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Abre a proxima tela se for chamado
-     */
-    public void updateUI() {
-        Intent intent = new Intent(RegisterActivity.this, VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-    public void goto_login() {
-        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        RegisterActivity.this.finish();
-    }
-
-    /**
      * limpa os campos
      */
     public void LimparCampos() {
@@ -491,6 +461,21 @@ public class RegisterActivity extends AppCompatActivity {
         et_password.setText("");
         et_confirm_email.setText("");
         et_confirm_password.setText("");
+        imb_register.setEnabled(true);
     }
 
+    //Activity's
+    public void gotoVerifyAccount() {
+        Intent intent = new Intent(RegisterActivity.this, VerifyAccount.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    public void gotoLoginActivity() {
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        RegisterActivity.this.finish();
+    }
 }

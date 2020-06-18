@@ -2,6 +2,7 @@ package br.com.pererao.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -57,6 +58,7 @@ public class VerifyAccount extends AppCompatActivity {
                 gotoLogin();
             }
         });
+
     }
 
     @Override
@@ -65,17 +67,12 @@ public class VerifyAccount extends AppCompatActivity {
         //FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
         if (mFirebaseUser != null) {
             mFirebaseUser.reload();
-            Log.i(TAG, "Com Usuário");
             if (mFirebaseUser.isEmailVerified()) {
-                Log.i(TAG, "E-mail verificado");
                 gotoDashboard();
-            } else if (!mFirebaseUser.isEmailVerified()) {
-                Log.i(TAG, "E-mail NÂO verificado");
+            } else {
                 resendCode();
             }
-        } else {
-            Log.i(TAG, "Sem Usuário");
-            gotoLogin();
+
         }
 
     }
@@ -102,12 +99,6 @@ public class VerifyAccount extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        gotoLogin();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         gotoLogin();
     }
 

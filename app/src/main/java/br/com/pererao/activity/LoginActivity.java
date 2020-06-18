@@ -113,14 +113,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
-        if (Fuser != null) {
-            Fuser.reload();
-            if (!mFirebaseUser.isEmailVerified()) {
-                Log.i(TAG, "Com Usuário e E-mail não verificado");
-                gotoVerifyAccount();
-            } else {
-                Log.i(TAG, "Com Usuário e E-mail verificado");
+        if (mFirebaseUser != null) {
+            if (mFirebaseUser.isEmailVerified()) {
                 gotoDashboardActivity();
             }
         } else {
@@ -171,8 +165,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void ConectarLogin(String email, String password) {
-        loadingDialog.startLoadingDialog();
         try {
+            btn_SingIn.setEnabled(false);
+            loadingDialog.startLoadingDialog();
             //Busca o email e a senha no firebase, se existir faz o login, senão ele da erro
             mFirebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -186,8 +181,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     } else {
                         //Aqui mostra o erro
+                        btn_SingIn.setEnabled(true);
                         Toast.makeText(getApplicationContext(), "Erro! Não Há Registro Correspondente A Esse Identificador, O Usuário Pode Ter sido Excluído", Toast.LENGTH_LONG).show();
-                        //LimparCampos();
                         loadingDialog.dismissDialog();
                     }
                 }
@@ -229,6 +224,13 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void LimparCampos() {
+        et_email.setText("");
+        et_password.setText("");
+        btn_SingIn.setEnabled(true);
+    }
+
+    //Activity's
     private void gotoVerifyAccount() {
         Intent intent = new Intent(LoginActivity.this, VerifyAccount.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -241,11 +243,6 @@ public class LoginActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
-    }
-
-    public void LimparCampos() {
-        et_email.setText("");
-        et_password.setText("");
     }
 
     private void newAccount() {

@@ -4,41 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/BackgroundColorCard"
     tools:context=".activity.ui.configuration.Configuration">
 
     <RelativeLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_edit_account"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginTop="35dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:padding="19.5dp"
-        android:text="@string/update_profile"
-        android:textAllCaps="false"
-        android:textColor="?attr/TextColor"
-        android:textSize="14sp"
-        android:textStyle="normal"
-        app:backgroundTint="#803D7AFE"
-        app:strokeColor="@android:color/transparent" />
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar_toolbar" />
 
-    <Switch
-        android:id="@+id/DarkMode"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_edit_account"
-        android:layout_marginTop="60dp"
-        android:padding="15dp"
-        android:text="@string/dark_mode"
-        android:textColor="?attr/TextColor" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_bar"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit_account"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:padding="19.5dp"
+                android:text="@string/update_profile"
+                android:textAllCaps="false"
+                android:textColor="?attr/TextColor"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:backgroundTint="#803D7AFE"
+                app:strokeColor="@android:color/transparent" />
+
+            <Switch
+                android:id="@+id/DarkMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="?attr/WhiteToBlack"
+                android:padding="15dp"
+                android:text="@string/dark_mode"
+                android:textColor="?attr/TextColor" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

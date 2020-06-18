@@ -58,34 +58,17 @@ public class SplashScreen extends Activity {
             /**
              * Novo Handler para iniciar a proxima Activity e fechar esta após alguns segundos.
              **/
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        Thread.sleep(3000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        SplashScreen.this.runOnUiThread(new Runnable() {
-                            public void run() {
-                                SplashScreen.this.doFinish();
-                            }
-                        });
-                    }
-                }
-            }).start();
-
-
-            /*new Handler().postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     /**
                      * Cria uma Intent que vai iniciar a OnbardingActivity (neste caso).
                      **/
-              /*      Intent intent = new Intent(SplashScreen.this, LoginActivity.class);//verify//OnboardingActivity
+                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);//verify//OnboardingActivity
                     startActivity(intent);
                     finish();
                 }
-            }, SPLASH_DISPLAY_LENGTH);*/
+            }, SPLASH_DISPLAY_LENGTH);
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -97,10 +80,5 @@ public class SplashScreen extends Activity {
             }, SPLASH_DISPLAY_LENGTH);
         }
 
-    }
-    private synchronized void doFinish() {
-        Intent i = new Intent(this, LoginActivity.class);
-        startActivity(i);
-        finish();
     }
 }

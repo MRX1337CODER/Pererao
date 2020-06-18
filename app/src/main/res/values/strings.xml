@@ -63,12 +63,14 @@
     <string name="update_data">Atualizar Dados</string>
     <string name="update_profile">Atualizar Perfil</string>
     <string name="profile">Perfil</string>
+    <string name="cancel">Cancelar</string>
+    <string name="submit">Enviar</string>
 
 
     <!--string name="new_email">Digite Seu Novo E-mail</string>
+    <string name="new_password">Digite Sua Nova Senha</string-->
     <string name="old_email">Digite Seu E-mail Atual</string>
-    <string name="new_password">Digite Sua Nova Senha</string>
-    <string name="old_password">Digite Sua Senha Atual</string-->
+    <string name="old_password">Digite Sua Senha Atual</string>
     <!--Outros-->
 
 </resources>
