@@ -114,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (mFirebaseUser != null) {
+            mFirebaseUser.reload();
             if (mFirebaseUser.isEmailVerified()) {
                 gotoDashboardActivity();
             }
@@ -233,21 +234,24 @@ public class LoginActivity extends AppCompatActivity {
     //Activity's
     private void gotoVerifyAccount() {
         Intent intent = new Intent(LoginActivity.this, VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(LoginActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoDashboardActivity() {
         Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(LoginActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void newAccount() {
         btn_new_account.setEnabled(false);
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(LoginActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -257,7 +261,8 @@ public class LoginActivity extends AppCompatActivity {
         btn_forgot_password.setEnabled(false);
         Intent intent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(LoginActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 

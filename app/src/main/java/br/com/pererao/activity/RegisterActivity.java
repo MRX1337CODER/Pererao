@@ -20,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +35,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -41,6 +44,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
+import java.util.UUID;
 
 import br.com.pererao.Network;
 import br.com.pererao.R;
@@ -56,9 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
     ImageButton imb_register;
     CircleImageView img_user;
     ImageView img_more;
-    private Uri imageUri;
+    Uri imageUri;
     MaterialButton btn_gotoLoginActivity;
-    String UserID;
+    String UserID, idPhoto, userUrl;
     static final String USUARIO = "Usuario";
     RelativeLayout relativeLayout;
     private static final String TAG = "RegisterActivityTAG";
@@ -112,6 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference(USUARIO);
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseUser = mFirebaseAuth.getCurrentUser();
 
         //ToolBar
         toolbar = findViewById(R.id.toolbar);
@@ -167,16 +172,22 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            uploadImage(imageBitmap);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
+            imageUri = data.getData();
+            //Bundle extras = data.getExtras();
+
+            //Bitmap imageBitmap = (Bitmap) imageUri.get("data");
+            //uploadImage(imageBitmap);
+            Glide.with(getApplicationContext())
+                    .load(imageUri)
+                    .into(img_user);
         }
     }
 
     private void uploadImage(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo/" + mFirebaseUser.getUid());
+        UUID idz = UUID.randomUUID();
+        final StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("/user_photo/" + idz);
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] imageUp = baos.toByteArray();
         UploadTask upload = mStorageReference.putBytes(imageUp);
@@ -185,13 +196,14 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 loadingDialog.dismissDialog();
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     mStorageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             Glide.with(getApplicationContext())
                                     .load(uri)
                                     .into(img_user);
+                            userUrl = uri.toString();
                             Toast.makeText(getApplicationContext(), "Imagem Carregada Com Sucesso", Toast.LENGTH_SHORT).show();
                             //img_user.setImageBitmap(imageBitmap);
                         }
@@ -222,19 +234,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-        this.doubleBackToExitPressedOnce = true;
-        SnackBarCustom.Snack(getApplication(), relativeLayout, "Pressione Voltar Novamente Para Sair", Snackbar.LENGTH_SHORT);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
-
+        gotoLoginActivity();
     }
 
     private void VerifyNet() {
@@ -264,18 +264,100 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         loadingDialog.startLoadingDialog();
-        ConfirmRegister(name, email, password);
+        CreateUser(name, email, password);
 
     }
 
-    private void ConfirmRegister(String name, String email, String password) {
+    /**
+     * Cadastro no Firebase
+     */
+    public void CreateUser(final String name, final String email, final String password) {
         try {
-            CreateUser(name, email, password);
+            imb_register.setEnabled(false);
+            //Cria usuário
+            mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        mFirebaseUser = mFirebaseAuth.getCurrentUser();
+                        assert mFirebaseUser != null;
+                        final String id = mFirebaseUser.getUid();
+
+                        //Envia email de verificação
+                        mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getApplicationContext(), "E-mail De Verificação Enviado, Clique Sobre Ele Para Confirmar", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), "Falha Ao Enviar E-mail de Verificação.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+
+                        updateUserInfo(name, email, password, imageUri, mFirebaseAuth.getCurrentUser(), id);
+
+                    } else {
+                        imb_register.setEnabled(true);
+                        loadingDialog.dismissDialog();
+                        Toast.makeText(getApplicationContext(), "Erro! Este Endereço De E-mail Já Está Sendo Usado Por Outra Conta.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
         } catch (Exception e) {
-            Log.i("Error", "Error: " + e.toString());
+            Log.e(TAG, "Error: " + e);
         }
     }
 
+    public void updateUserInfo(final String name, final String email, final String password, final Uri imageUri, final FirebaseUser currentUser, final String id) {
+
+        //String userUrl = "default";
+        if (imageUri == null) {
+            userUrl = "default";
+            saveUser(id, name, email, password, userUrl);
+        } else {
+            StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
+            final StorageReference imageFilePath = mStorageReference.child(imageUri.getPath());//.getLastPathSegment());
+            imageFilePath.putFile(imageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            imageFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    userUrl = uri.toString();
+                                    saveUser(id, name, email, password, userUrl);
+                                }
+                            });
+                        }
+                    });
+        }
+
+    }
+
+    public void saveUser(String id, String name, String email, String password, String url) {
+        String status = "offline";
+        String search = name.toLowerCase();
+        float rating = 0;
+        user = new User(id, name, email, password, url, status, search, rating);
+        loadingDialog.dismissDialog();
+        //Adiciona dados do usuário no FB
+        mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                LimparCampos();
+                gotoVerifyAccount();
+            }
+        });
+    }
+
+
+    /*Verificar campos*/
     private boolean validateUsernameRegister() {
         String val = ti_et_name.getEditText().getText().toString().trim();
 
@@ -395,64 +477,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /**
-     * Cadastro no Firebase
-     */
-    public void CreateUser(final String name, final String email, final String password) {
-        try {
-            imb_register.setEnabled(false);
-            //Cria usuário
-            mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        mFirebaseUser = mFirebaseAuth.getCurrentUser();
-                        assert mFirebaseUser != null;
-                        final String id = mFirebaseUser.getUid();
-
-                        //Envia email de verificação
-                        mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "E-mail De Verificação Enviado, Clique Sobre Ele Para Confirmar", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), "Falha Ao Enviar E-mail de Verificação.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                        String userUrl = "default";
-                        String status = "offline";
-                        String search = name.toLowerCase();
-                        float rating = 0;
-                        user = new User(id, name, email, password, userUrl, status, search, rating);
-                        loadingDialog.dismissDialog();
-                        //Adiciona dados do usuário no FB
-                        mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                LimparCampos();
-                                gotoVerifyAccount();
-                            }
-                        });
-
-                    } else {
-                        imb_register.setEnabled(true);
-                        loadingDialog.dismissDialog();
-                        Toast.makeText(getApplicationContext(), "Erro! Este Endereço De E-mail Já Está Sendo Usado Por Outra Conta.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error: " + e);
-        }
-    }
-
-    /**
      * limpa os campos
      */
     public void LimparCampos() {
@@ -467,15 +491,17 @@ public class RegisterActivity extends AppCompatActivity {
     //Activity's
     public void gotoVerifyAccount() {
         Intent intent = new Intent(RegisterActivity.this, VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(RegisterActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     public void gotoLoginActivity() {
         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        RegisterActivity.this.finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(RegisterActivity.this, intent, activityOptionsCompat.toBundle());
+        finish();
     }
 }

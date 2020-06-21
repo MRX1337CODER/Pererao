@@ -1,34 +1,28 @@
 package br.com.pererao.activity;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,14 +30,17 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
+import br.com.pererao.activity.ui.configuration.Configuration;
+import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class UpdateProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class UpdateProfileActivity extends AppCompatActivity {
 
+    private static final String TAG = "UpdateProfileActivity";
     TextInputEditText et_username, et_email, et_password;
     TextInputLayout ti_et_username, ti_et_email, ti_et_password;
-    ImageButton btn_edit_email, btn_edit_password;
     CircleImageView img_user;
+    ImageView iv_more;
     private static final String USUARIO = "Usuario";
     DatabaseReference mDatabaseReference;
     FirebaseUser mFirebaseUser;
@@ -52,7 +49,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
     LoadingDialog loadingDialog = new LoadingDialog(UpdateProfileActivity.this);
     SharedPref sharedPref;
     String _USERNAME, _EMAIL, _PASSWORD, _USERURL, _SEARCH;
-    Intent intentGet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,22 +82,54 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
         ti_et_email = findViewById(R.id.ti_update_email);
         ti_et_password = findViewById(R.id.ti_update_password);
 
-        btn_edit_email = findViewById(R.id.btn_edit_email);
-        btn_edit_password = findViewById(R.id.btn_edit_password);
-
         img_user = findViewById(R.id.user_image);
+        iv_more = findViewById(R.id.img_more);
 
+        loadingDialog.startLoadingDialog();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
 
-        intentGet = getIntent();
-        _USERNAME = intentGet.getStringExtra("username");
-        _EMAIL = intentGet.getStringExtra("email");
-        _PASSWORD = intentGet.getStringExtra("password");
-        _USERURL = intentGet.getStringExtra("userUrl");
-        _SEARCH = intentGet.getStringExtra("search");
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    assert user != null;
+                    _USERNAME = user.getNomeUser();
+                    _EMAIL = user.getEmailUser();
+                    _PASSWORD = user.getSenhaUser();
+                    _USERURL = user.getUserUrl();
+                    _SEARCH = user.getSearch();
+                    loadingDialog.dismissDialog();
+                    initFields();
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+        img_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updatePhotoProfile();
+            }
+        });
+        iv_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updatePhotoProfile();
+            }
+        });
+
+    }
+
+    public void initFields(){
         if (_USERURL.equals("default")) {
             img_user.setImageResource(R.drawable.ic_user_icon);
         } else {
@@ -113,20 +141,18 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
         et_username.setText(_USERNAME);
         et_email.setText(_EMAIL);
         et_password.setText(_PASSWORD);
+    }
 
-        btn_edit_email.setOnClickListener(this);
-        btn_edit_password.setOnClickListener(this);
+    public void updatePhotoProfile(){
+        Toast.makeText(getApplicationContext(), "Atualizar Foto...", Toast.LENGTH_SHORT).show();
     }
 
     public void update(View view) {
-        if (isPasswordChanged()) {
-            String title = getString(R.string.old_password);
-            dialogchange(title, "passwordChange");
-        }
         if (isNameChanged()) {
-            Toast.makeText(getApplicationContext(), "Dado Atualizado.", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "Os Dados São Iguais E Não Podem Ser Atualizados.", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "Nome Atualizado");
+        }
+        if (isPasswordChanged()){
+            Log.i(TAG,"Senha Atualizada");
         }
     }
 
@@ -137,8 +163,10 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
             map.put("nomeUser", val);
             mDatabaseReference.updateChildren(map);
             _USERNAME = val;
+            Toast.makeText(getApplicationContext(), "Dado Atualizado Com Sucesso", Toast.LENGTH_SHORT).show();
             return true;
         } else {
+            Toast.makeText(getApplicationContext(), "Dado Igual Anterior E Não Pode Ser Atualizado", Toast.LENGTH_SHORT).show();
             return false;
         }
     }
@@ -150,68 +178,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
             map.put("senhaUser", val);
             mDatabaseReference.updateChildren(map);
             _PASSWORD = val;
+            Toast.makeText(getApplicationContext(), "Dado Atualizado Com Sucesso", Toast.LENGTH_SHORT).show();
             return true;
         } else {
+            Toast.makeText(getApplicationContext(), "Dado Igual Anterior E Não Pode Ser Atualizado", Toast.LENGTH_SHORT).show();
             return false;
-        }
-    }
-
-    public void dialogchange(String title, final String type) {
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dView = inflater.inflate(R.layout.change_dialog, null);
-        builder.setView(dView);
-
-        final TextInputLayout ti_et_change = dView.findViewById(R.id.ti_pass);
-        final EditText et_change = dView.findViewById(R.id.et_change);
-        //String val = ti_et_change.getEditText().getText().toString();
-        builder.setTitle("Trocar Senha");
-        //builder.setMessage(title);
-        builder.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (type == "emailChange") {
-                } else {
-                    et_change.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    et_change.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_email_outline_black_24dp, 0, 0, 0);
-                    et_change.setHint(R.string.old_password);
-                    final String val = et_change.getText().toString().trim();
-
-                    if (TextUtils.isEmpty(val)) {
-                        et_change.setError("Nova Senha Obrigatório");
-                        et_change.requestFocus();
-                    } else if (et_change.length() < 8) {
-                        et_change.setError("A Nova Senha Deve Conter No Mínimo 8 Caracteres");
-                        et_change.requestFocus();
-                    } else if (val != _PASSWORD) {
-                        et_change.setError("Senha Errada!");
-                    } else {
-                        et_change.setError(null);
-                        isPasswordChanged();
-                    }
-                }
-            }
-        });
-
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-
-        if (TextUtils.isEmpty(et_change.getText().toString())) {
-            //Toast.makeText(UpdateProfileActivity.this, "", Toast.LENGTH_SHORT).show();
-            et_change.setError("Nova Senha Obrigatório");
-            et_change.requestFocus();
-        } else if (et_change.length() < 8) {
-            et_change.setError("A Nova Senha Deve Conter No Mínimo 8 Caracteres");
-            et_change.requestFocus();
-        } else {
-            et_change.setError(null);
-            //et_change.setErrorEnabled(false);
         }
     }
 
@@ -229,26 +200,16 @@ public class UpdateProfileActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
+        loadingDialog.dismissDialog();
         gotoActivity();
     }
 
     private void gotoActivity() {
         Intent intent = new Intent(UpdateProfileActivity.this, DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(UpdateProfileActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-        switch (id) {
-            case R.id.btn_edit_email:
-                break;
-            case R.id.btn_edit_password:
-                et_password.setEnabled(true);
-                ti_et_password.setFocusable(true);
-                break;
-        }
-    }
 }

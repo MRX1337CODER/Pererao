@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
@@ -48,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     CircleImageView user_image;
     Button btn_profile, btn_maps, btn_chat, btn_configuration;
     private static final String TAG = "DashboardActivity";
+    LoadingDialog loadingDialog = new LoadingDialog(DashboardActivity.this);
     private static final String USUARIO = "Usuario";
 
     FirebaseAuth mFirebaseAuth;
@@ -81,18 +85,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
+        loadingDialog.startLoadingDialog();
+
 
         onStart();
         //ToolBar
         this.toolbar.setTitle("Painel");
         setSupportActionBar(toolbar);
-
-        if (mFirebaseUser != null) {
+        mFirebaseUser.reload();
+        if (mFirebaseUser == null) {
+            gotoLoginActivity();
+        } else if (!mFirebaseUser.isEmailVerified()) {
+            gotoVerifyAccount();
+        } else {
             mDatabaseReference.child(mFirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
-                    if (user == null) {
+                    if (user == null || user.getNomeUser() == null) {
                         gotoLoginActivity();
                     }
                     assert user != null;
@@ -106,6 +116,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                                 .load(user.getUserUrl())
                                 .into(user_image);
                     }
+                    loadingDialog.dismissDialog();
+
                 }
 
                 @Override
@@ -113,8 +125,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                 }
             });
-        } else {
-            gotoLoginActivity();
         }
 
         btn_profile.setOnClickListener(this);
@@ -129,8 +139,11 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         super.onStart();
         //FirebaseUser Fuser = mFirebaseAuth.getCurrentUser();
         if (mFirebaseUser != null) {
+            mFirebaseUser.reload();
             if (!mFirebaseUser.isEmailVerified()) {
                 gotoVerifyAccount();
+            } else {
+                Log.i(TAG, "E-mail Verificado e Co Usuário");
             }
         } else {
             gotoLoginActivity();
@@ -221,43 +234,49 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     //Activity's
     private void gotoLoginActivity() {
         Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoVerifyAccount() {
         Intent intent = new Intent(DashboardActivity.this, VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoProfileActivity() {
         Intent intent = new Intent(DashboardActivity.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoMapActivity() {
         Intent intent = new Intent(DashboardActivity.this, MapActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoChatActivity() {
         Intent intent = new Intent(DashboardActivity.this, ChatActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoConfigurationActivity() {
         Intent intent = new Intent(DashboardActivity.this, Configuration.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
     }
 }

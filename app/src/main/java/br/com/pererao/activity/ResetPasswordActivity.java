@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +31,7 @@ import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.ui.configuration.Configuration;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
@@ -179,8 +182,9 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void gotoActivity() {
         Intent intent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        ResetPasswordActivity.this.finish();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(ResetPasswordActivity.this, intent, activityOptionsCompat.toBundle());
+        finish();
     }
 }

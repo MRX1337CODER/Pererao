@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/BackgroundColorCard"
+    android:background="?android:attr/textColorPrimary"
     tools:context=".activity.UpdateProfileActivity">
 
     <RelativeLayout
@@ -91,14 +91,14 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ti_update_email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:focusable="false"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:hint="@string/hint_email"
-                android:visibility="visible"
                 app:boxStrokeColor="#FF191919"
                 app:boxStrokeWidth="2dp"
                 app:boxStrokeWidthFocused="2dp"
@@ -114,22 +114,11 @@
                     android:id="@+id/et_update_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:enabled="false"
                     android:inputType="textEmailAddress"
                     android:padding="13dp"
                     android:textColor="?attr/textColorEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/btn_edit_email"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/border_radius_leve_blue"
-                android:src="@drawable/ic_edit_black_24dp"
-                tools:ignore="ContentDescription,PrivateResource" />
 
         </LinearLayout>
 
@@ -144,12 +133,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ti_update_password"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:focusable="false"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
                 android:hint="@string/hint_password"
                 android:visibility="visible"
                 app:boxStrokeColor="#FF191919"
@@ -166,22 +156,11 @@
                     android:id="@+id/et_update_password"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:enabled="false"
                     android:inputType="textPassword"
                     android:padding="13dp"
                     android:textColor="?attr/textColorEditText" />
 
             </com.google.android.material.textfield.TextInputLayout>
-
-            <ImageButton
-                android:id="@+id/btn_edit_password"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/border_radius_leve_blue"
-                android:src="@drawable/ic_edit_black_24dp"
-                tools:ignore="ContentDescription,PrivateResource" />
 
         </LinearLayout>
 
@@ -201,7 +180,7 @@
             android:padding="9.5dp"
             android:text="@string/update_data"
             android:textAllCaps="false"
-            android:textColor="?attr/TextColor"
+            android:textColor="?android:attr/textColorPrimary"
             android:textSize="14sp"
             android:textStyle="normal"
             app:backgroundTint="#803D7AFE"
