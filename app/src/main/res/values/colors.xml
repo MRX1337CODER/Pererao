@@ -8,6 +8,8 @@
 
 
 
+    <color name="textColor">#000000</color>
+    <color name="textColorInvert">#ffffff</color>
     <color name="cardColor">#ffffff</color>
     <color name="textcardColor">#3f3f3f</color>
 </resources>

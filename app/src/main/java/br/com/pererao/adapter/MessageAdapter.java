@@ -1,38 +1,26 @@
 package br.com.pererao.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import br.com.pererao.R;
-import br.com.pererao.activity.MessageActivity;
 import br.com.pererao.model.Chat;
-import br.com.pererao.model.User;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
@@ -73,16 +61,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = mChat.get(position);
         holder.show_message.setText(chat.getMessage());
         holder.date_message.setText(DateFormat.format("dd/MM/yyyy (HH:mm:ss)", chat.getMessageTime()));
-
         if (imageUrl.equals("default")) {
-            Glide.with(mContext)
-                    .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
-                    .transform(new CircleCrop())
-                    .into(holder.profile_image);
+            holder.profile_image.setImageResource(R.drawable.ic_user_icon);
         } else {
             Glide.with(mContext)
                     .load(imageUrl)
-                    .transform(new CircleCrop())
                     .into(holder.profile_image);
         }
     }
@@ -97,7 +80,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public TextView show_message;
         public TextView date_message;
         //public TextView txt_seen;
-        public ImageView profile_image;
+        public CircleImageView profile_image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

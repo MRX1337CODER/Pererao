@@ -6,19 +6,18 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import br.com.pererao.R;
+import br.com.pererao.SharedPref;
 import br.com.pererao.activity.DashboardActivity;
 
 public class MapActivity extends AppCompatActivity {
 
+    SharedPref sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         /*Tema Escuro**/
-        /*sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }*/
+        sharedPref = new SharedPref(this);
+        sharedPref.CarregamentoTemaEscuro();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 

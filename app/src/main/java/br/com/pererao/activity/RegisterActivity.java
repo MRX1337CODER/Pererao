@@ -1,10 +1,8 @@
 package br.com.pererao.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -35,16 +33,13 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.Objects;
-import java.util.UUID;
 
 import br.com.pererao.Network;
 import br.com.pererao.R;
@@ -62,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
     ImageView img_more;
     Uri imageUri;
     MaterialButton btn_gotoLoginActivity;
-    String UserID, idPhoto, userUrl;
+    String UserID, userUrl;
     static final String USUARIO = "Usuario";
     RelativeLayout relativeLayout;
     private static final String TAG = "RegisterActivityTAG";
@@ -70,7 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
     LoadingDialog loadingDialog = new LoadingDialog(RegisterActivity.this);
     SharedPref sharedPref;
     Toolbar toolbar;
-    boolean doubleBackToExitPressedOnce = false;
     User user;
     //Firebase
     FirebaseAuth mFirebaseAuth;
@@ -86,11 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
         //      WindowManager.LayoutParams.FLAG_SECURE);
         /*Tema Escuro**/
         sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
+        sharedPref.CarregamentoTemaEscuro();
         setContentView(R.layout.activity_register);
 
         //TODO: Declarações
@@ -160,6 +150,12 @@ public class RegisterActivity extends AppCompatActivity {
                 takePictureIntent();
             }
         });
+        img_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePictureIntent();
+            }
+        });
     }
 
     private void takePictureIntent() {
@@ -174,50 +170,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
             imageUri = data.getData();
-            //Bundle extras = data.getExtras();
-
-            //Bitmap imageBitmap = (Bitmap) imageUri.get("data");
-            //uploadImage(imageBitmap);
             Glide.with(getApplicationContext())
                     .load(imageUri)
                     .into(img_user);
         }
-    }
-
-    private void uploadImage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        UUID idz = UUID.randomUUID();
-        final StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("/user_photo/" + idz);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageUp = baos.toByteArray();
-        UploadTask upload = mStorageReference.putBytes(imageUp);
-        loadingDialog.startLoadingDialog();
-        upload.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                loadingDialog.dismissDialog();
-                if (task.isSuccessful()) {
-                    mStorageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Glide.with(getApplicationContext())
-                                    .load(uri)
-                                    .into(img_user);
-                            userUrl = uri.toString();
-                            Toast.makeText(getApplicationContext(), "Imagem Carregada Com Sucesso", Toast.LENGTH_SHORT).show();
-                            //img_user.setImageBitmap(imageBitmap);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "Erro: " + e.getMessage());
-                            Toast.makeText(getApplicationContext(), "Falha Ao Carregar Imagem", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-
     }
 
     @Override
@@ -322,7 +278,7 @@ public class RegisterActivity extends AppCompatActivity {
             saveUser(id, name, email, password, userUrl);
         } else {
             StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
-            final StorageReference imageFilePath = mStorageReference.child(imageUri.getPath());//.getLastPathSegment());
+            final StorageReference imageFilePath = mStorageReference.child(id).child("profile").child(imageUri.getLastPathSegment());
             imageFilePath.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override

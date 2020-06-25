@@ -42,15 +42,24 @@
                 app:backgroundTint="#803D7AFE"
                 app:strokeColor="@android:color/transparent" />
 
-            <Switch
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/DarkMode"
-                android:layout_width="match_parent"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:background="?attr/WhiteToBlack"
-                android:padding="15dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:padding="19.5dp"
                 android:text="@string/dark_mode"
-                android:textColor="?attr/TextColor" />
+                android:textAllCaps="false"
+                android:textColor="?attr/TextColor"
+                android:textSize="14sp"
+                android:textStyle="normal"
+                app:backgroundTint="#801D2639"
+                app:strokeColor="@android:color/transparent" />
 
         </LinearLayout>
 

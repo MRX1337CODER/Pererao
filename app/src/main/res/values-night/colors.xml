@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#191919</color>
+    <color name="colorPrimaryDark">#111111</color>
+    <color name="colorAccent">#FFE92A</color>
+    <color name="black_opacity">#ED131313</color>
+    <color name="snackBackground">#d9d9d9</color>
+
+    <color name="textColor">#ffffff</color>
+    <color name="textColorInvert">#000000</color>
+    <color name="cardColor">#000000</color>
+    <color name="textcardColor">#3f3f3f</color>
+</resources>

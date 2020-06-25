@@ -31,7 +31,6 @@ import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
-import br.com.pererao.activity.ui.configuration.Configuration;
 
 public class ResetPasswordActivity extends AppCompatActivity {
 
@@ -50,11 +49,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         /*Tema Escuro**/
         sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
+        sharedPref.CarregamentoTemaEscuro();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 

@@ -1,12 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--Default Theme-->
-    <style name="teste" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -38,58 +33,15 @@
     </style>
     <!--Default Theme-->
 
-    <!--Dark Theme-->
-    <style name="DarkTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <item name="colorPrimary">@color/DarkColorPrimary</item>
-        <item name="colorPrimaryDark">@color/DarkColorPrimaryDark</item>
-        <item name="colorAccent">@color/DarkColorAccent</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowContentOverlay">@null</item>
-
-        <item name="attrPrimaryColor">#851AFF</item>
-        <item name="attrPrimaryColorDark">#500E9A</item>
-
-        <item name="textColorEditText">#F4F4F4</item>
-
-        <item name="android:label">#f1f1f1</item>
-        <item name="BackgroundColor">#303030</item>
-        <item name="BackgroundColorSplashScreen">#001418</item>
-        <item name="BackgroundColorCard">#F7646464</item>
-        <item name="HintColor">#F3E0E0E0</item>
-        <item name="wGray">#A2A2A2</item>
-        <!--item name="BackgroundColorDark"></item-->
-        <item name="TextColor">#ffffff</item>
-        <item name="TintColor">#001418</item>
-        <item name="ButtonColor">@android:color/white</item>
-        <item name="White">#161616</item>
-        <item name="textSplash">@color/colorPrimary</item>
-
-        <item name="BlackToWhite">#FFFFFF</item>
-        <item name="WhiteToBlack">#000000</item>
-    </style>
-    <!--Dark Theme-->
-
     <!--FullScreen Theme-->
     <style name="AppTheme.FullScreen" parent="AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@color/textColorInvert</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
         <item name="android:navigationBarColor" tools:ignore="NewApi">@color/colorPrimary</item>
-    </style>
-
-    <style name="DarkTheme.FullScreen" parent="DarkTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">@color/DarkColorPrimary</item>
     </style>
     <!--FullScreen Theme-->
 

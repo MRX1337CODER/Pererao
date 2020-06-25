@@ -1,11 +1,14 @@
 package br.com.pererao.activity.ui.configuration;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
@@ -20,19 +23,15 @@ import br.com.pererao.activity.UpdateProfileActivity;
 public class Configuration extends AppCompatActivity {
 
     SharedPref sharedPref;
-    Switch DarkMode;
-    MaterialButton btn_edit_account;
+    MaterialButton btn_edit_account, DarkMode;
+    int checkedItem = 0;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
+        sharedPref.CarregamentoTemaEscuro();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuration);
 
@@ -43,18 +42,10 @@ public class Configuration extends AppCompatActivity {
         DarkMode = findViewById(R.id.DarkMode);
 
         //Tema Escuro Botão
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            DarkMode.setChecked(true);
-        }
-        DarkMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton btnView, boolean isChecked) {
-                if (isChecked) {
-                    sharedPref.setEstadoTemaEscuro(true);
-                    restartApp();
-                } else {
-                    sharedPref.setEstadoTemaEscuro(false);
-                    restartApp();
-                }
+        DarkMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAlertDialogDarkMode();
             }
         });
 
@@ -80,7 +71,51 @@ public class Configuration extends AppCompatActivity {
         finish();
     }
 
-    public void restartApp() {
+    private void showAlertDialogDarkMode() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(Configuration.this);
+        alertDialog.setTitle("Escolha um tema");
+        final String[] items = {"Claro", "Escuro"};
+        switch (sharedPref.CarregamentoTemaEscuro()) {
+            case 0:
+                checkedItem = 0;
+                break;
+            case 1:
+                checkedItem = 1;
+                break;
+        }
+
+        alertDialog.setSingleChoiceItems(items, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        Toast.makeText(Configuration.this, "Selecionou: " + items[which], Toast.LENGTH_LONG).show();
+                        sharedPref.setTheme(0);
+                        restartActivity();
+                        dialog.dismiss();
+                        break;
+                    case 1:
+                        Toast.makeText(Configuration.this, "Selecionou: " + items[which], Toast.LENGTH_LONG).show();
+                        sharedPref.setTheme(1);
+                        restartActivity();
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = alertDialog.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+    }
+
+    public void restartActivity() {
         Intent intent = new Intent(getApplicationContext(), Configuration.class);
         startActivity(intent);
         finish();

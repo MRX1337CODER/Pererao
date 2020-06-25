@@ -28,11 +28,7 @@ public class NetworkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         /*Tema Escuro**/
         sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
+        sharedPref.CarregamentoTemaEscuro();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
 

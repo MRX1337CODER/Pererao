@@ -56,11 +56,7 @@ public class LoginActivity extends AppCompatActivity {
         //           WindowManager.LayoutParams.FLAG_SECURE);
         /*Tema Escuro**/
         sharedPref = new SharedPref(this);
-        if (sharedPref.CarregamentoTemaEscuro()) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
+        sharedPref.CarregamentoTemaEscuro();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

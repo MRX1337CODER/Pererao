@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="?android:attr/actionBarSize"
     android:id="@+id/relative_layout"
-    tools:context=".activity.ui.chat.ChatFragment">
+    tools:context=".activity.ui.chat.ChatActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
