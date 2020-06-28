@@ -2,7 +2,6 @@ package br.com.pererao.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -45,9 +43,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.username.setText(user.getNomeUser());
         if (user.getUserUrl().equals("default")) {
             Glide.with(mContext)
-                    .load(Glide.with(mContext))//"https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fman_user.png?alt=media")
+                    .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fuserzin.png?alt=media")
                     .transform(new CircleCrop())
-                    .placeholder(R.drawable.ic_user_icon)
                     .into(holder.profile_image);
         } else {
             Glide.with(mContext)

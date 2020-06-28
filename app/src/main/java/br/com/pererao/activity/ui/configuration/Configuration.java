@@ -10,10 +10,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
@@ -27,6 +32,7 @@ public class Configuration extends AppCompatActivity {
     int checkedItem = 0;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +43,19 @@ public class Configuration extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        //ToolBar
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_configuration);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoDashboardActivity();
+            }
+        });
 
         btn_edit_account = findViewById(R.id.btn_edit_account);
         DarkMode = findViewById(R.id.DarkMode);
@@ -53,8 +72,10 @@ public class Configuration extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), UpdateProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+                ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
+                finish();
             }
         });
 
@@ -62,13 +83,6 @@ public class Configuration extends AppCompatActivity {
 
     public void onBackPressed() {
         gotoDashboardActivity();
-    }
-
-    private void gotoDashboardActivity(){
-        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 
     private void showAlertDialogDarkMode() {
@@ -115,8 +129,17 @@ public class Configuration extends AppCompatActivity {
         alert.show();
     }
 
+    private void gotoDashboardActivity() {
+        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
+        finish();
+    }
+
     public void restartActivity() {
         Intent intent = new Intent(getApplicationContext(), Configuration.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
         finish();
     }

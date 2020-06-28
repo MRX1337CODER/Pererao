@@ -3,12 +3,16 @@ package br.com.pererao.activity.ui.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.activity.DashboardActivity;
@@ -36,6 +42,7 @@ public class HomeActivity extends AppCompatActivity {
     RatingBar ratingBar;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +61,19 @@ public class HomeActivity extends AppCompatActivity {
         if (usernull != null) {
             UserID = usernull.getUid();
         }
+
+        //ToolBar
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.profile);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoDashboardActivity();
+            }
+        });
 
         if (mFirebaseUser != null) {
             mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
@@ -104,22 +124,25 @@ public class HomeActivity extends AppCompatActivity {
 
     private void gotoDashboardActivity() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoLoginActivity() {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();
     }
 
     private void gotoVerifyAccount() {
         Intent intent = new Intent(getApplicationContext(), VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();
     }
 }

@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -105,23 +107,24 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                 //User user = snapshot.getValue(User.class);
-                User user = dataSnapshot.getValue(User.class);
-                assert user != null;
-                username_chat.setText(user.getNomeUser());
-                if (user.getUserUrl().equals("default")) {
-                    profile_user_image_chat.setImageResource(R.drawable.ic_user_icon);
-                } else {
-                    Glide.with(getApplicationContext())
-                            .load(user.getUserUrl())
-                            .into(profile_user_image_chat);
+                if (dataSnapshot.exists()) {
+                    User user = dataSnapshot.getValue(User.class);
+                    assert user != null;
+                    username_chat.setText(user.getNomeUser());
+                    if (user.getUserUrl().equals("default")) {
+                        profile_user_image_chat.setImageResource(R.drawable.ic_user_icon);
+                    } else {
+                        Glide.with(getApplicationContext())
+                                .load(user.getUserUrl())
+                                .into(profile_user_image_chat);
+                    }
+
+                    // }
+                    Chat c = dataSnapshot.getValue(Chat.class);
+                    assert c != null;
+                    long dateMessage = c.getMessageTime();
+                    readMessage(mFirebaseUser.getUid(), id, user.getUserUrl(), dateMessage);
                 }
-
-                // }
-                Chat c = dataSnapshot.getValue(Chat.class);
-                assert c != null;
-                long dateMessage = c.getMessageTime();
-                readMessage(mFirebaseUser.getUid(), id, user.getUserUrl(), dateMessage);
-
             }
 
             @Override
@@ -165,10 +168,12 @@ public class MessageActivity extends AppCompatActivity {
                 int cont = 0;
                 cont = cont + 1;
                 if (cont == 1) {
-                    Intent intent = new Intent(MessageActivity.this, PreOrcamentoActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra("id", id);
-                    startActivity(intent);
+                    ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+                    ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
+                    finish();
                 }
                 return true;
             default:
@@ -199,7 +204,7 @@ public class MessageActivity extends AppCompatActivity {
                     if (chat.getReceiver().equals(myId) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(myId)) {
                         mChat.add(chat);
                     }
-                    messageAdapter = new MessageAdapter(MessageActivity.this, mChat, imageUrl, dateMessage);
+                    messageAdapter = new MessageAdapter(MessageActivity.this, mChat, dateMessage);
                     recyclerView.setAdapter(messageAdapter);
                 }
 
@@ -218,9 +223,10 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void gotoChatActivity() {
-        Intent intent = new Intent(MessageActivity.this, ChatActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();
     }
 }

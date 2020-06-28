@@ -29,15 +29,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     private Context mContext;
     private List<Chat> mChat;
-    private String imageUrl;
     private long dateMessage;
 
     FirebaseUser mFirebaseUser;
 
-    public MessageAdapter(Context mContext, List<Chat> mChat, String imageUrl, long dateMessage) {
+    public MessageAdapter(Context mContext, List<Chat> mChat, long dateMessage) {
         this.mContext = mContext;
         this.mChat = mChat;
-        this.imageUrl = imageUrl;
         this.dateMessage = new Date().getTime();
     }
 
@@ -61,13 +59,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = mChat.get(position);
         holder.show_message.setText(chat.getMessage());
         holder.date_message.setText(DateFormat.format("dd/MM/yyyy (HH:mm:ss)", chat.getMessageTime()));
-        if (imageUrl.equals("default")) {
-            holder.profile_image.setImageResource(R.drawable.ic_user_icon);
-        } else {
-            Glide.with(mContext)
-                    .load(imageUrl)
-                    .into(holder.profile_image);
-        }
     }
 
     @Override
@@ -80,14 +71,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         public TextView show_message;
         public TextView date_message;
         //public TextView txt_seen;
-        public CircleImageView profile_image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
             date_message = itemView.findViewById(R.id.date_message_chat);
-            profile_image = itemView.findViewById(R.id.profile_image_chat);
         }
     }
 
