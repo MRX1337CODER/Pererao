@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,6 +58,7 @@ public class MessageActivity extends AppCompatActivity {
     Toolbar toolbar;
     SharedPref sharedPref;
     String id;
+    ValueEventListener seenListener;
 
     MessageAdapter messageAdapter;
     List<Chat> mChat;
@@ -102,6 +104,22 @@ public class MessageActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
 
+        imb_send_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = ti_ed_message_user.getEditText().getText().toString();
+                if (!(TextUtils.isEmpty(msg))) {
+
+                    long messageTime = new Date().getTime();
+
+                    sendMessage(msg, id,mFirebaseUser.getUid(), messageTime);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Campo Vázio", Toast.LENGTH_SHORT).show();
+                }
+                ed_message_user.setText("");
+            }
+        });
+
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -123,7 +141,7 @@ public class MessageActivity extends AppCompatActivity {
                     Chat c = dataSnapshot.getValue(Chat.class);
                     assert c != null;
                     long dateMessage = c.getMessageTime();
-                    readMessage(mFirebaseUser.getUid(), id, user.getUserUrl(), dateMessage);
+                    readMessage(mFirebaseUser.getUid(), id, dateMessage);
                 }
             }
 
@@ -132,26 +150,9 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        imb_send_message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String msg = ti_ed_message_user.getEditText().getText().toString();
-                if (!(TextUtils.isEmpty(msg))) {
+        seenMessage(id);
 
-                    long messageTime = new Date().getTime();
-
-                    sendMessage(msg, mFirebaseUser.getUid(), id, messageTime);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Campo Vázio", Toast.LENGTH_SHORT).show();
-                }
-                ed_message_user.setText("");
-            }
-        });
     }
 
     @Override
@@ -169,7 +170,7 @@ public class MessageActivity extends AppCompatActivity {
                 cont = cont + 1;
                 if (cont == 1) {
                     Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra("id", id);
                     ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
                     ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
@@ -181,14 +182,56 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
-    private void sendMessage(String message, String receiver, String sender, long dateMessage) {
-        DatabaseReference mDataRefChat = FirebaseDatabase.getInstance().getReference();
-        Chat chat = new Chat(message, receiver, sender, dateMessage);
+    private void seenMessage(final String userid) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat");
+        seenListener = mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (dataSnapshot.exists()) {
+                        Chat chat = snapshot.getValue(Chat.class);
+                        if (chat.getReceiver().equals(mFirebaseUser.getUid()) && chat.getSender().equals(userid)) {
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            Chat chat1 = new Chat();
+                            chat1.setIsseen(true);
+                            hashMap.put("isseen", true);
+                            //mDataRefChat.child("Chat").getRef().updateChildren(hashMap);
+                            snapshot.getRef().updateChildren(hashMap);
+                        }
+                    }
+                }
+            }
 
-        mDataRefChat.child("Chat").push().setValue(chat);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    private void readMessage(final String myId, final String userId, final String imageUrl, final long dateMessage) {
+    private void sendMessage(String message, String receiver, String sender, long dateMessage) {
+        DatabaseReference mDataRefChat = FirebaseDatabase.getInstance().getReference();
+        Chat chat = new Chat(message, receiver, sender, dateMessage, false);
+
+        mDataRefChat.child("Chat").push().setValue(chat);
+
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist").child(mFirebaseUser.getUid()).child(id);
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()) {
+                    chatRef.child("id").setValue(id);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readMessage(final String myId, final String userId, final long dateMessage) {
         mChat = new ArrayList<>();
         final DatabaseReference mDataBaseRead = FirebaseDatabase.getInstance().getReference("Chat");
         mDataBaseRead.addValueEventListener(new ValueEventListener() {
@@ -217,6 +260,26 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    private void status(String status) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        mDatabaseReference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("On-line");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDatabaseReference.removeEventListener(seenListener);
+        status("Off-line");
+    }
+
     @Override
     public void onBackPressed() {
         gotoChatActivity();
@@ -224,7 +287,7 @@ public class MessageActivity extends AppCompatActivity {
 
     private void gotoChatActivity() {
         Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();

@@ -44,12 +44,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.i("VIEWTYPE", "VIEW: " + viewType);
         if (viewType == MSG_TYPE_RIGHT) {
-            //View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_right, parent, false);
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_left, parent, false);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_right, parent, false);
             return new MessageAdapter.ViewHolder(view);
         } else {
-            //View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_left, parent, false);
-            View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_right, parent, false);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_chat_left, parent, false);
             return new MessageAdapter.ViewHolder(view);
         }
     }
@@ -59,6 +57,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         Chat chat = mChat.get(position);
         holder.show_message.setText(chat.getMessage());
         holder.date_message.setText(DateFormat.format("dd/MM/yyyy (HH:mm:ss)", chat.getMessageTime()));
+        if (position == mChat.size()-1){
+            if (chat.isIsseen()){
+                holder.txt_seen.setText("Vista");
+            }
+            else {
+                holder.txt_seen.setText("Entregue");
+            }
+        }
+        else {
+            holder.txt_seen.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -70,13 +79,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         public TextView show_message;
         public TextView date_message;
-        //public TextView txt_seen;
+        public TextView txt_seen;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
             date_message = itemView.findViewById(R.id.date_message_chat);
+            txt_seen = itemView.findViewById(R.id.txt_seen);
         }
     }
 

@@ -12,8 +12,10 @@
         android:layout_alignParentEnd="true"
         tools:ignore="UselessParent">
 
-        <RelativeLayout
+        <LinearLayout
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
+            android:orientation="vertical"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:background="@drawable/background_right_message"
@@ -27,17 +29,29 @@
                 android:textColor="#fff"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/date_message_chat"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/show_message"
                 android:layout_marginTop="5dp"
-                android:layout_alignParentEnd="true"
-                android:text="00:00"
-                android:textSize="12sp" />
+                android:orientation="horizontal">
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/date_message_chat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/txt_seen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

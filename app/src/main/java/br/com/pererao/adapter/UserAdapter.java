@@ -24,10 +24,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     private Context mContext;
     private List<User> mUser;
+    private boolean isChat;
 
-    public UserAdapter(Context mContext, List<User> mUser) {
+    public UserAdapter(Context mContext, List<User> mUser, boolean isChat) {
         this.mContext = mContext;
         this.mUser = mUser;
+        this.isChat = isChat;
     }
 
     @NonNull
@@ -44,13 +46,24 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         if (user.getUserUrl().equals("default")) {
             Glide.with(mContext)
                     .load("https://firebasestorage.googleapis.com/v0/b/pererao2k20.appspot.com/o/user_photo%2Fuserzin.png?alt=media")
-                    .transform(new CircleCrop())
                     .into(holder.profile_image);
         } else {
             Glide.with(mContext)
                     .load(user.getUserUrl())
-                    .transform(new CircleCrop())
                     .into(holder.profile_image);
+        }
+
+        if (isChat) {
+            if (user.getStatus().equals("On-line")) {
+                holder.img_on.setVisibility(View.VISIBLE);
+                holder.img_off.setVisibility(View.GONE);
+            } else {
+                holder.img_on.setVisibility(View.GONE);
+                holder.img_off.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.img_on.setVisibility(View.GONE);
+            holder.img_off.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -73,12 +86,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public TextView username;
         public ImageView profile_image;
+        private ImageView img_on;
+        private ImageView img_off;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.username_chat);
             profile_image = itemView.findViewById(R.id.profile_image_chat);
+
+            img_on = itemView.findViewById(R.id.img_on);
+            img_off = itemView.findViewById(R.id.img_off);
         }
     }
 

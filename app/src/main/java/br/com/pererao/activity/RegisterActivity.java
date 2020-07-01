@@ -297,7 +297,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void saveUser(String id, String name, String email, String password, String url) {
-        String status = "offline";
+        String status = "Off-line";
         String search = name.toLowerCase();
         float rating = 0;
         user = new User(id, name, email, password, url, status, search, rating);

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:background="@drawable/background_left_message"
-        android:padding="8dp">
+        android:padding="8dp"
+        tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/show_message"
@@ -18,16 +21,29 @@
             android:text="Olá Usuário"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/date_message_chat"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/show_message"
-            android:layout_alignParentEnd="true"
             android:layout_marginTop="5dp"
-            android:text="00:00"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/date_message_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_seen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:visibility="gone"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -9,7 +9,14 @@
     android:padding="10dp"
     tools:ignore="MissingDefaultResource">
 
-    <ImageView
+    <!--ImageView
+        android:id="@+id/profile_image_chat"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_user_icon"
+        tools:ignore="ContentDescription" /-->
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image_chat"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -25,5 +32,33 @@
         android:layout_marginStart="15dp"
         android:layout_toEndOf="@+id/profile_image_chat"
         android:textSize="18sp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_on"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:civ_border_width="10dp"
+        android:layout_below="@id/username_chat"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="-15dp"
+        android:visibility="gone"
+        android:layout_toEndOf="@id/profile_image_chat"
+        app:civ_border_color="#05DF29"
+        tools:ignore="ContentDescription" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/img_off"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:civ_border_width="10dp"
+        android:layout_below="@id/username_chat"
+        android:src="@mipmap/ic_launcher"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="-15dp"
+        android:visibility="gone"
+        android:layout_toEndOf="@id/profile_image_chat"
+        app:civ_border_color="#BFBFBF"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>
