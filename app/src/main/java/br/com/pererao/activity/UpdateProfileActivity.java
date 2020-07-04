@@ -171,6 +171,25 @@ public class UpdateProfileActivity extends AppCompatActivity {
         }
     }
 
+    private void status(String status) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        mDatabaseReference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("On-line");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("Off-line");
+    }
+
     public void update(View view) {
         if (isNameChanged()) {
             Log.i(TAG, "Nome Atualizado");

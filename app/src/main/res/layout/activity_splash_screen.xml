@@ -6,6 +6,7 @@
     tools:context=".activity.SplashScreen">
 
     <TextView
+        android:textColor="?android:attr/textColorPrimary"
         android:id="@+id/splash_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,20 +15,6 @@
         android:textAlignment="center"
         android:textAllCaps="true"
         android:textSize="35sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/splash_developer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="35dp"
-        android:text="@string/developed"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:textSize="16sp"
         android:textStyle="bold" />
 
 </RelativeLayout>

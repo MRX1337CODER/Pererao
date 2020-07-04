@@ -17,7 +17,10 @@ import androidx.core.app.ActivityOptionsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import br.com.pererao.R;
@@ -32,6 +35,8 @@ public class Configuration extends AppCompatActivity {
     int checkedItem = 0;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
+    DatabaseReference mDatabaseReference;
+    private final static String USUARIO = "Usuario";
     Toolbar toolbar;
 
     @Override
@@ -81,6 +86,25 @@ public class Configuration extends AppCompatActivity {
 
     }
 
+    private void status(String status) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        mDatabaseReference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("On-line");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("Off-line");
+    }
+
     public void onBackPressed() {
         gotoDashboardActivity();
     }
@@ -103,13 +127,11 @@ public class Configuration extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        Toast.makeText(Configuration.this, "Selecionou: " + items[which], Toast.LENGTH_LONG).show();
                         sharedPref.setTheme(0);
                         restartActivity();
                         dialog.dismiss();
                         break;
                     case 1:
-                        Toast.makeText(Configuration.this, "Selecionou: " + items[which], Toast.LENGTH_LONG).show();
                         sharedPref.setTheme(1);
                         restartActivity();
                         dialog.dismiss();

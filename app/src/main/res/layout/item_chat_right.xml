@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_dell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/rl_dell"
     android:padding="8dp">
 
     <RelativeLayout
@@ -13,21 +14,26 @@
         tools:ignore="UselessParent">
 
         <LinearLayout
-            android:layout_alignParentEnd="true"
+            android:id="@+id/ll_chat"
             android:layout_width="wrap_content"
-            android:orientation="vertical"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="5dp"
             android:background="@drawable/background_right_message"
+            android:orientation="vertical"
             android:padding="8dp">
 
-            <TextView
+            <com.borjabravo.readmoretextview.ReadMoreTextView
                 android:id="@+id/show_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Olá Usuário"
-                android:textColor="#fff"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                app:colorClickableText="@color/colorAccent"
+                app:trimCollapsedText="Ler Menos"
+                app:trimExpandedText="Ler Mais"
+                app:trimLength="13"
+                app:trimMode="trimModeLine" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -39,19 +45,24 @@
                     android:id="@+id/date_message_chat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="23dp"
                     android:text="00:00"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/txt_seen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="MissingConstraints" />
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <include
+            android:id="@+id/marcador"
+            layout="@layout/marcador_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_chat"
+            android:layout_marginStart="-25dp"
+            android:layout_marginTop="-24dp"
+            android:layout_toEndOf="@+id/ll_chat" />
 
     </RelativeLayout>
 

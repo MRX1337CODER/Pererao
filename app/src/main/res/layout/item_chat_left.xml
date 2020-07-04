@@ -1,25 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:padding="8dp">
 
     <LinearLayout
-        android:orientation="vertical"
+        android:id="@+id/ll_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:background="@drawable/background_left_message"
+        android:orientation="vertical"
         android:padding="8dp"
         tools:ignore="UselessParent">
 
-        <TextView
+        <com.borjabravo.readmoretextview.ReadMoreTextView
             android:id="@+id/show_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Olá Usuário"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:colorClickableText="@color/colorAccent"
+            app:trimCollapsedText="@string/read_more"
+            app:trimExpandedText="@string/read_less"
+            app:trimLength="13"
+            app:trimMode="trimModeLine" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,19 +38,17 @@
                 android:id="@+id/date_message_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
                 android:text="00:00"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/txt_seen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:visibility="gone"
                 android:textSize="12sp" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/marcador"
+        layout="@layout/marcador_chat"
+        android:visibility="gone" />
 
 </RelativeLayout>

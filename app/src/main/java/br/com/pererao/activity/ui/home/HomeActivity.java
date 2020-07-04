@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import br.com.pererao.R;
@@ -103,6 +104,25 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             gotoLoginActivity();
         }
+    }
+
+    private void status(String status) {
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        mDatabaseReference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("On-line");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("Off-line");
     }
 
     @Override

@@ -9,13 +9,6 @@
     android:padding="10dp"
     tools:ignore="MissingDefaultResource">
 
-    <!--ImageView
-        android:id="@+id/profile_image_chat"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_user_icon"
-        tools:ignore="ContentDescription" /-->
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image_chat"
         android:layout_width="50dp"
@@ -37,28 +30,40 @@
         android:id="@+id/img_on"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        app:civ_border_width="10dp"
         android:layout_below="@id/username_chat"
-        android:src="@mipmap/ic_launcher"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="-15dp"
-        android:visibility="gone"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/profile_image_chat"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
         app:civ_border_color="#05DF29"
+        app:civ_border_width="10dp"
         tools:ignore="ContentDescription" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_off"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        app:civ_border_width="10dp"
         android:layout_below="@id/username_chat"
-        android:src="@mipmap/ic_launcher"
-        android:layout_marginTop="10dp"
         android:layout_marginStart="-15dp"
-        android:visibility="gone"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/profile_image_chat"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"
         app:civ_border_color="#BFBFBF"
+        app:civ_border_width="10dp"
         tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/last_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username_chat"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@id/profile_image_chat"
+        android:paddingTop="5dp"
+        android:maxLines="1"
+        android:textColor="@color/colorPrimaryDark" />
 
 </RelativeLayout>

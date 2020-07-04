@@ -45,6 +45,7 @@ import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.firebase.FirebaseHelper;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -255,7 +256,7 @@ public class RegisterActivity extends AppCompatActivity {
                         });
 
 
-                        updateUserInfo(name, email, password, imageUri, mFirebaseAuth.getCurrentUser(), id);
+                        updateUserInfo(name, email, password, imageUri, id);
 
                     } else {
                         imb_register.setEnabled(true);
@@ -270,7 +271,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void updateUserInfo(final String name, final String email, final String password, final Uri imageUri, final FirebaseUser currentUser, final String id) {
+    public void updateUserInfo(final String name, final String email, final String password, final Uri imageUri, final String id) {
 
         //String userUrl = "default";
         if (imageUri == null) {

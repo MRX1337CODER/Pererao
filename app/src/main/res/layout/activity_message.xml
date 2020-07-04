@@ -50,7 +50,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="7dp"
                 android:inputType="textMultiLine"
-                android:maxHeight="200dp"
+                android:maxHeight="100dp"
                 android:padding="13dp"
                 android:textColor="?attr/textColorEditText" />
 

@@ -32,8 +32,6 @@ import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.activity.DashboardActivity;
 import br.com.pererao.adapter.UserAdapter;
-import br.com.pererao.model.Chat;
-import br.com.pererao.model.Chatlist;
 import br.com.pererao.model.User;
 
 public class MapActivity extends AppCompatActivity {
@@ -135,9 +133,9 @@ public class MapActivity extends AppCompatActivity {
         gotoDashboardActivity();
     }
 
-    private void gotoDashboardActivity(){
+    private void gotoDashboardActivity() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();

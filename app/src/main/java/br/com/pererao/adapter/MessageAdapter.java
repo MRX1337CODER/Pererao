@@ -6,12 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,12 +20,11 @@ import java.util.List;
 
 import br.com.pererao.R;
 import br.com.pererao.model.Chat;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    public static final int MSG_TYPE_LEFT = 1;//0
-    public static final int MSG_TYPE_RIGHT = 0;//1
+    public static final int MSG_TYPE_LEFT = 0;
+    public static final int MSG_TYPE_RIGHT = 1;
 
     private Context mContext;
     private List<Chat> mChat;
@@ -59,14 +58,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         holder.date_message.setText(DateFormat.format("dd/MM/yyyy (HH:mm:ss)", chat.getMessageTime()));
         if (position == mChat.size()-1){
             if (chat.isIsseen()){
-                holder.txt_seen.setText("Vista");
+                holder.img_delivered.setVisibility(View.GONE);
+                holder.img_seen.setVisibility(View.VISIBLE);
             }
             else {
-                holder.txt_seen.setText("Entregue");
+                holder.img_delivered.setVisibility(View.VISIBLE);
+                holder.img_seen.setVisibility(View.GONE);
             }
         }
         else {
-            holder.txt_seen.setVisibility(View.GONE);
+            holder.img_delivered.setVisibility(View.GONE);
+            holder.img_seen.setVisibility(View.GONE);
         }
     }
 
@@ -79,14 +81,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         public TextView show_message;
         public TextView date_message;
-        public TextView txt_seen;
+        private ImageView img_delivered;
+        private ImageView img_seen;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             show_message = itemView.findViewById(R.id.show_message);
             date_message = itemView.findViewById(R.id.date_message_chat);
-            txt_seen = itemView.findViewById(R.id.txt_seen);
+            img_delivered = itemView.findViewById(R.id.img_delivered);
+            img_seen = itemView.findViewById(R.id.img_seen);
         }
     }
 

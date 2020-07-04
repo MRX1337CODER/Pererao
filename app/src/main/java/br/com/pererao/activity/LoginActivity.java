@@ -32,6 +32,7 @@ import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.firebase.FirebaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
 

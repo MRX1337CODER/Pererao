@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pererão</string>
-    <string name="developed">Desenvolvido Por CheckPoint</string>
 
     <!--Geral-->
     <string name="hint_email">E-mail</string>
@@ -71,6 +70,8 @@
     <string name="new_password">Digite Sua Nova Senha</string-->
     <string name="old_email">Digite Seu E-mail Atual</string>
     <string name="old_password">Digite Sua Senha Atual</string>
+    <string name="read_more">Ler Mais</string>
+    <string name="read_less">Ler Menos</string>
     <!--Outros-->
 
 </resources>

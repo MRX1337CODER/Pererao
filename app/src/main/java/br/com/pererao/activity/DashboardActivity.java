@@ -36,10 +36,13 @@ import java.util.HashMap;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
+import br.com.pererao.activity.firebase.DatabaseReferenceHelper;
+import br.com.pererao.activity.firebase.FirebaseHelper;
 import br.com.pererao.activity.ui.chat.ChatActivity;
 import br.com.pererao.activity.ui.configuration.Configuration;
 import br.com.pererao.activity.ui.home.HomeActivity;
 import br.com.pererao.activity.ui.map.MapActivity;
+import br.com.pererao.model.Chat;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -50,7 +53,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     boolean doubleBackToExitPressedOnce = false;
     LinearLayout linearLayout;
     TextView tv_username, tv_email;
-    CircleImageView user_image;
+    CircleImageView user_image, new_message;
     Button btn_profile, btn_maps, btn_chat, btn_configuration;
     private static final String TAG = "DashboardActivity";
     LoadingDialog loadingDialog = new LoadingDialog(DashboardActivity.this);
@@ -74,6 +77,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         tv_username = findViewById(R.id.user_name);
         tv_email = findViewById(R.id.user_email);
         user_image = findViewById(R.id.user_image);
+        new_message = findViewById(R.id.img_new_message);
 
         btn_profile = findViewById(R.id.btn_profile);
         btn_maps = findViewById(R.id.btn_maps);
@@ -82,7 +86,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         //Firebase
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         loadingDialog.startLoadingDialog();
 
         //ToolBar
@@ -94,7 +98,32 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         } else if (!mFirebaseUser.isEmailVerified()) {
             gotoVerifyAccount();
         } else {
-            mDatabaseReference.child(mFirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            mDatabaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    int unread = 0;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                        Chat chat = snapshot.getValue(Chat.class);
+                        if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()){
+                            unread++;
+                        }
+                    }
+                    if (unread == 0){
+                        new_message.setVisibility(View.GONE);
+                    }
+                    else{
+                        new_message.setVisibility(View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            mDatabaseReference.child(USUARIO).child(mFirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
@@ -121,6 +150,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
                 }
             });
+
         }
 
         btn_profile.setOnClickListener(this);
@@ -130,7 +160,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void status(String status){
+    private void status(String status) {
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("status", status);
@@ -158,7 +188,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             if (!mFirebaseUser.isEmailVerified()) {
                 gotoVerifyAccount();
             } else {
-                Log.i(TAG, "E-mail Verificado e Co Usuário");
+                Log.i(TAG, "E-mail Verificado e Com Usuário");
             }
         } else {
             gotoLoginActivity();
@@ -223,7 +253,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void signOut() {
-        mFirebaseAuth.signOut();
+        FirebaseHelper.logOut();
         gotoLoginActivity();
     }
 
@@ -249,7 +279,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     //Activity's
     private void gotoLoginActivity() {
         Intent intent = new Intent(DashboardActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -257,7 +289,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void gotoVerifyAccount() {
         Intent intent = new Intent(DashboardActivity.this, VerifyAccount.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -265,7 +299,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void gotoProfileActivity() {
         Intent intent = new Intent(DashboardActivity.this, HomeActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -273,7 +309,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void gotoMapActivity() {
         Intent intent = new Intent(DashboardActivity.this, MapActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -281,7 +319,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void gotoChatActivity() {
         Intent intent = new Intent(DashboardActivity.this, ChatActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();
@@ -289,7 +329,9 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
 
     private void gotoConfigurationActivity() {
         Intent intent = new Intent(DashboardActivity.this, Configuration.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(DashboardActivity.this, intent, activityOptionsCompat.toBundle());
         finish();

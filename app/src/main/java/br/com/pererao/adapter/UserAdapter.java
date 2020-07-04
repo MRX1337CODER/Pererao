@@ -13,11 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 import br.com.pererao.R;
 import br.com.pererao.activity.MessageActivity;
+import br.com.pererao.model.Chat;
 import br.com.pererao.model.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
@@ -25,6 +33,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private List<User> mUser;
     private boolean isChat;
+    String theLastMessage;
 
     public UserAdapter(Context mContext, List<User> mUser, boolean isChat) {
         this.mContext = mContext;
@@ -54,6 +63,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         if (isChat) {
+            lastMessage(user.getId(), holder.last_msg);
+        } else {
+            holder.last_msg.setVisibility(View.GONE);
+        }
+
+        if (isChat) {
             if (user.getStatus().equals("On-line")) {
                 holder.img_on.setVisibility(View.VISIBLE);
                 holder.img_off.setVisibility(View.GONE);
@@ -70,7 +85,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MessageActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("id", user.getId());
                 mContext.startActivity(intent);
             }
@@ -85,20 +100,54 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView username;
+        private TextView last_msg;
         public ImageView profile_image;
         private ImageView img_on;
         private ImageView img_off;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             username = itemView.findViewById(R.id.username_chat);
+            last_msg = itemView.findViewById(R.id.last_msg);
             profile_image = itemView.findViewById(R.id.profile_image_chat);
 
             img_on = itemView.findViewById(R.id.img_on);
             img_off = itemView.findViewById(R.id.img_off);
         }
+    }
+
+    private void lastMessage(final String userid, final TextView last_msg) {
+        theLastMessage = "default";
+        final FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat");
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(mFirebaseUser.getUid()) && chat.getSender().equals(userid) || chat.getReceiver().equals(userid) && chat.getSender().equals(mFirebaseUser.getUid())) {
+                        theLastMessage = chat.getMessage();
+                    }
+                }
+
+                switch (theLastMessage) {
+                    case "default":
+                        last_msg.setText("Sem Mensagem...");
+                        break;
+                    default:
+                        last_msg.setText(theLastMessage);
+                        break;
+                }
+
+                theLastMessage = "default";
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

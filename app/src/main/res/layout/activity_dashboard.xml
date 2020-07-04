@@ -51,18 +51,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:maxWidth="300dp"
+                android:singleLine="true"
                 android:text="@string/hint_name_register"
                 android:textColor="@color/textColor"
-                android:singleLine="true"
                 android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/user_email"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
                 android:maxWidth="300dp"
+                android:singleLine="true"
                 android:text="@string/hint_email"
                 android:textColor="@color/textColor"
                 android:textSize="16sp" />
@@ -199,12 +199,33 @@
                         android:orientation="vertical"
                         tools:ignore="UseCompoundDrawables">
 
-                        <ImageView
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                        <RelativeLayout
                             android:layout_marginTop="18dp"
-                            android:src="@drawable/ic_chat"
-                            tools:ignore="ContentDescription" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/img_chat"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:src="@drawable/ic_chat"
+                                tools:ignore="ContentDescription" />
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/img_new_message"
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:layout_below="@id/img_chat"
+                                android:layout_marginStart="-15dp"
+                                android:layout_marginTop="-10dp"
+                                android:layout_toEndOf="@id/img_chat"
+                                android:src="@mipmap/ic_launcher"
+                                android:visibility="gone"
+                                app:civ_border_color="#FF0000"
+                                app:civ_border_width="10dp"
+                                tools:ignore="ContentDescription" />
+
+                        </RelativeLayout>
 
                         <TextView
                             android:layout_width="wrap_content"

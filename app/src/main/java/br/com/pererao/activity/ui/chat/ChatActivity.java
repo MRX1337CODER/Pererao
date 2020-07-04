@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import br.com.pererao.adapter.UserAdapter;
 import br.com.pererao.model.Chat;
 import br.com.pererao.model.Chatlist;
 import br.com.pererao.model.User;
+import br.com.pererao.notifications.Token;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -93,6 +95,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
     }
 
     private void status(String status) {
@@ -114,6 +118,12 @@ public class ChatActivity extends AppCompatActivity {
         status("Off-line");
     }
 
+    private void updateToken(String token){
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token token1 = new Token(token);
+        mDatabaseReference.child(mFirebaseUser.getUid()).setValue(token1);
+    }
+
     private void chatList() {
         mUser = new ArrayList<>();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
@@ -121,11 +131,13 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUser.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    User user = snapshot.getValue(User.class);
-                    for (Chatlist chatlist : usersList) {
-                        if (user.getId().equals(chatlist.getId())) {
-                            mUser.add(user);
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        User user = snapshot.getValue(User.class);
+                        for (Chatlist chatlist : usersList) {
+                            if (user.getId().equals(chatlist.getId())) {
+                                mUser.add(user);
+                            }
                         }
                     }
                 }
@@ -146,7 +158,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void gotoDashboardActivity() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();
