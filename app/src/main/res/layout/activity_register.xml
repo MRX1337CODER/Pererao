@@ -7,6 +7,7 @@
     tools:context=".activity.RegisterActivity">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -72,15 +73,44 @@
                             android:background="@drawable/ic_more"
                             tools:ignore="ContentDescription" />
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/ti_username_register"
-                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        <RadioGroup
+                            android:id="@+id/radio_prestador"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/user_image"
                             android:layout_marginStart="25dp"
                             android:layout_marginLeft="25dp"
                             android:layout_marginTop="35dp"
+                            android:layout_marginEnd="25dp"
+                            android:layout_marginRight="25dp"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/rb_Cliente"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:checked="true"
+                                android:text="Cliente" />
+
+                            <RadioButton
+                                android:id="@+id/rb_Prestador"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Prestador" />
+
+                        </RadioGroup>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/ti_username_register"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/radio_prestador"
+                            android:layout_marginStart="25dp"
+                            android:layout_marginLeft="25dp"
+                            android:layout_marginTop="20dp"
                             android:layout_marginEnd="25dp"
                             android:layout_marginRight="25dp"
                             android:hint="@string/hint_name_register"

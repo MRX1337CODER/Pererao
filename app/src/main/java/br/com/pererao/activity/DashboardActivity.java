@@ -2,6 +2,9 @@ package br.com.pererao.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,6 +25,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +35,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import java.util.HashMap;
 
@@ -58,6 +65,8 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     private static final String TAG = "DashboardActivity";
     LoadingDialog loadingDialog = new LoadingDialog(DashboardActivity.this);
     private static final String USUARIO = "Usuario";
+    private PackageInfo pInfo;
+    private FirebaseRemoteConfig mFirebaseRemoteConfig;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -86,8 +95,10 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         //Firebase
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
         loadingDialog.startLoadingDialog();
+        checkUpdateApp();
 
         //ToolBar
         this.toolbar.setTitle("Painel");
@@ -103,16 +114,15 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     int unread = 0;
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         Chat chat = snapshot.getValue(Chat.class);
-                        if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()){
+                        if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()) {
                             unread++;
                         }
                     }
-                    if (unread == 0){
+                    if (unread == 0) {
                         new_message.setVisibility(View.GONE);
-                    }
-                    else{
+                    } else {
                         new_message.setVisibility(View.VISIBLE);
                     }
                 }
@@ -158,6 +168,66 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btn_chat.setOnClickListener(this);
         btn_configuration.setOnClickListener(this);
 
+
+    }
+
+    private void checkUpdateApp() {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("new_version_code", String.valueOf(getVersionCode()));
+
+        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
+                .setMinimumFetchIntervalInSeconds(10) // mudar para 3600 para publicar o app
+                .build();
+
+        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
+        mFirebaseRemoteConfig.setDefaultsAsync(hashMap);
+
+        mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
+            @Override
+            public void onComplete(@NonNull Task<Boolean> task) {
+                if (task.isSuccessful()) {
+                    final String new_version_code = mFirebaseRemoteConfig.getString("new_version_code");
+                    if (Integer.parseInt(new_version_code) > getVersionCode()) {
+                        showUpdateAppDialog("seu pacote aqui", new_version_code);
+                    }
+                }
+            }
+        });
+    }
+
+    //Alert Dialog Atualização
+    private void showUpdateAppDialog(final String appPackageName, String versionFromRemoteConfig) {
+        AlertDialog.Builder ad = new AlertDialog.Builder(this);
+        ad.setTitle("Atualização");
+        ad.setMessage("Essa versão está obsoleta, por favor atualize para a versão: " + versionFromRemoteConfig);
+        ad.setPositiveButton("Atualizar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
+                dialog.dismiss();
+            }
+        });
+
+        ad.setCancelable(false);
+        AlertDialog alert = ad.create();
+        alert.setCanceledOnTouchOutside(false);
+        alert.show();
+    }
+
+    public int getVersionCode() {
+        pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            //Log.i("MYLOG", "NameNotFoundException: "+e.getMessage());
+        }
+        return pInfo.versionCode;
     }
 
     private void status(String status) {

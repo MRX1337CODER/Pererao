@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.activity.DashboardActivity;
+import br.com.pererao.activity.LoadingDialog;
 import br.com.pererao.adapter.UserAdapter;
 import br.com.pererao.model.Chat;
 import br.com.pererao.model.Chatlist;
@@ -44,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
     private List<User> mUser;
     private List<Chatlist> usersList;
     private static final String USUARIO = "Usuario";
+    LoadingDialog loadingDialog = new LoadingDialog(ChatActivity.this);
     RelativeLayout relativeLayout;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -56,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.recent_message);
 
         relativeLayout = findViewById(R.id.relative_layout);
+        loadingDialog.startLoadingDialog();
 
         //ToolBar
         toolbar = findViewById(R.id.toolbar);
@@ -82,9 +86,13 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
+                loadingDialog.dismissDialog();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
+                }
+                if (userAdapter == null){
+                    Toast.makeText(getApplicationContext(), "Sem Mensagens Recentes", Toast.LENGTH_SHORT).show();
                 }
                 chatList();
             }

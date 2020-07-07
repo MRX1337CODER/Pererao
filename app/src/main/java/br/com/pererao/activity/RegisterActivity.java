@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -59,8 +60,10 @@ public class RegisterActivity extends AppCompatActivity {
     Uri imageUri;
     MaterialButton btn_gotoLoginActivity;
     String UserID, userUrl;
-    static final String USUARIO = "Usuario";
     RelativeLayout relativeLayout;
+    RadioGroup rg_prestador;
+    boolean isPrestador = false;
+    static final String USUARIO = "Usuario";
     private static final String TAG = "RegisterActivityTAG";
     private static final int REQUEST_IMAGE_CAPTURE = 100;
     LoadingDialog loadingDialog = new LoadingDialog(RegisterActivity.this);
@@ -97,6 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
         et_password = findViewById(R.id.et_password_register);
         et_confirm_password = findViewById(R.id.et_confirm_password_register);
 
+        rg_prestador = findViewById(R.id.radio_prestador);
         btn_gotoLoginActivity = findViewById(R.id.btn_goto_login);
         imb_register = findViewById(R.id.imb_register);
         img_user = findViewById(R.id.user_image);
@@ -155,6 +159,20 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 takePictureIntent();
+            }
+        });
+
+        rg_prestador.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_Cliente:
+                        isPrestador = false;
+                        break;
+                    case R.id.rb_Prestador:
+                        isPrestador = true;
+                        break;
+                }
             }
         });
     }
@@ -255,8 +273,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         });
 
-
-                        updateUserInfo(name, email, password, imageUri, id);
+                        updateUserInfo(name, email, imageUri, id);
 
                     } else {
                         imb_register.setEnabled(true);
@@ -271,15 +288,15 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void updateUserInfo(final String name, final String email, final String password, final Uri imageUri, final String id) {
+    public void updateUserInfo(final String name, final String email, final Uri imageUri, final String id) {
 
         //String userUrl = "default";
         if (imageUri == null) {
             userUrl = "default";
-            saveUser(id, name, email, password, userUrl);
+            saveUser(id, name, email, userUrl);
         } else {
             StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
-            final StorageReference imageFilePath = mStorageReference.child(id).child("profile").child(imageUri.getLastPathSegment());
+            final StorageReference imageFilePath = mStorageReference.child(id).child("profile").child("profile_image_user");//imageUri.getLastPathSegment());
             imageFilePath.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -288,7 +305,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     userUrl = uri.toString();
-                                    saveUser(id, name, email, password, userUrl);
+                                    saveUser(id, name, email, userUrl);
                                 }
                             });
                         }
@@ -297,18 +314,22 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void saveUser(String id, String name, String email, String password, String url) {
+    public void saveUser(String id, String name, String email, String url) {
         String status = "Off-line";
         String search = name.toLowerCase();
         float rating = 0;
-        user = new User(id, name, email, password, url, status, search, rating);
+        user = new User(id, name, email, url, status, search, rating, isPrestador);
         loadingDialog.dismissDialog();
         //Adiciona dados do usuário no FB
         mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 LimparCampos();
-                gotoVerifyAccount();
+                if (isPrestador = true) {
+                    gotoQualificationActivity();
+                } else {
+                    gotoVerifyAccount();
+                }
             }
         });
     }
@@ -448,6 +469,14 @@ public class RegisterActivity extends AppCompatActivity {
     //Activity's
     public void gotoVerifyAccount() {
         Intent intent = new Intent(RegisterActivity.this, VerifyAccount.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+        ActivityCompat.startActivity(RegisterActivity.this, intent, activityOptionsCompat.toBundle());
+        finish();
+    }
+
+    public void gotoQualificationActivity() {
+        Intent intent = new Intent(RegisterActivity.this, QualificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(RegisterActivity.this, intent, activityOptionsCompat.toBundle());

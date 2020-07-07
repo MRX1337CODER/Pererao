@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +29,9 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.activity.DashboardActivity;
+import br.com.pererao.activity.LoadingDialog;
 import br.com.pererao.activity.LoginActivity;
+import br.com.pererao.activity.UpdateProfileActivity;
 import br.com.pererao.activity.VerifyAccount;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -39,11 +42,13 @@ public class HomeActivity extends AppCompatActivity {
     CircleImageView user_image;
     DatabaseReference mDatabaseReference;
     private static final String USUARIO = "Usuario";
+    LoadingDialog loadingDialog = new LoadingDialog(HomeActivity.this);
     String UserID;
     RatingBar ratingBar;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
     Toolbar toolbar;
+    FloatingActionButton fab_update_profile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,9 +59,11 @@ public class HomeActivity extends AppCompatActivity {
         nameUser = findViewById(R.id.tv_name_user);
         emailUser = findViewById(R.id.tv_email_user);
         ratingBar = findViewById(R.id.ratingBarUser);
+        fab_update_profile = findViewById(R.id.fab_edit_profile);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseUser = mFirebaseAuth.getCurrentUser();
+        loadingDialog.startLoadingDialog();
 
         FirebaseUser usernull = mFirebaseAuth.getCurrentUser();
         if (usernull != null) {
@@ -76,6 +83,17 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        fab_update_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdateProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+                ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
+                finish();
+            }
+        });
+
         if (mFirebaseUser != null) {
             mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO).child(mFirebaseUser.getUid());
             mDatabaseReference.addListenerForSingleValueEvent(
@@ -84,6 +102,7 @@ public class HomeActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             User user = dataSnapshot.getValue(User.class);
                             assert user != null;
+                            loadingDialog.dismissDialog();
                             nameUser.setText(user.getNomeUser());
                             emailUser.setText(user.getEmailUser());
                             if (user.getUserUrl().equals("default")) {
@@ -93,6 +112,7 @@ public class HomeActivity extends AppCompatActivity {
                                         .load(user.getUserUrl())
                                         .into(user_image);
                             }
+                            ratingBar.setRating(user.getRating());
                         }
 
                         @Override

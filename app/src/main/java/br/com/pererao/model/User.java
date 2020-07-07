@@ -5,42 +5,23 @@ public class User {
     private String id;
     private String nomeUser;
     private String emailUser;
-    private String senhaUser;
     private String userUrl;
     private String status;
     private String search;
     private float rating;
+    private boolean isPrestador;
 
     public User() {}
 
-    public User(String id, String nomeUser, String emailUser, String senhaUser, String userUrl, String status, String search, float rating) {
+    public User(String id, String nomeUser, String emailUser, String userUrl, String status, String search, float rating, boolean isPrestador) {
         this.id = id;
         this.nomeUser = nomeUser;
         this.emailUser = emailUser;
-        this.senhaUser = senhaUser;
         this.userUrl = userUrl;
         this.status = status;
         this.search = search;
         this.rating = rating;
-    }
-
-    public User(String nomeUser, String emailUser) {
-        this.nomeUser = nomeUser;
-        this.emailUser = emailUser;
-    }
-
-    public User(String nomeUser, String emailUser, String id) {
-        this.nomeUser = nomeUser;
-        this.emailUser = emailUser;
-        this.id = id;
-    }
-
-    //Configurar o construtor para o cliente e para o prestador depois... aqui está só o básico
-    public User(String nomeUser, String emailUser, String senhaUser, String userUrl) {
-        this.nomeUser = nomeUser;
-        this.emailUser = emailUser;
-        this.senhaUser = senhaUser;
-        this.userUrl = userUrl;
+        this.isPrestador = isPrestador;
     }
 
     public String getNomeUser() {
@@ -57,14 +38,6 @@ public class User {
 
     public void setEmailUser(String emailUser) {
         this.emailUser = emailUser;
-    }
-
-    public String getSenhaUser() {
-        return senhaUser;
-    }
-
-    public void setSenhaUser(String senhaUser) {
-        this.senhaUser = senhaUser;
     }
 
     public String getUserUrl() {
@@ -105,5 +78,13 @@ public class User {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public boolean isPrestador() {
+        return isPrestador;
+    }
+
+    public void setPrestador(boolean prestador) {
+        isPrestador = prestador;
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.QualificationActivity">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_submit_qualifications"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginRight="25dp"
+        android:padding="19.5dp"
+        android:text="Enviar td que vai ter aki dps"
+        android:textAllCaps="false"
+        android:textColor="?attr/TextColor"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:backgroundTint="#803D7AFE"
+        app:strokeColor="@android:color/transparent" />
+
+</RelativeLayout>

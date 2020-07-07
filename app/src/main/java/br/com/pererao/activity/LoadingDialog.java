@@ -6,15 +6,15 @@ import android.view.LayoutInflater;
 
 import br.com.pererao.R;
 
-class LoadingDialog {
-    private Activity activity;
+public class LoadingDialog {
+    public Activity activity;
     private AlertDialog Alert_Dialog;
 
-    LoadingDialog(Activity activity2) {
+    public LoadingDialog(Activity activity2) {
         activity = activity2;
     }
 
-    void startLoadingDialog() {
+    public void startLoadingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -25,7 +25,7 @@ class LoadingDialog {
         Alert_Dialog.show();
     }
 
-    void dismissDialog() {
+    public void dismissDialog() {
         Alert_Dialog.dismiss();
     }
 }

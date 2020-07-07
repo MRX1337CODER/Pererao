@@ -4,9 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,12 +23,11 @@ import java.util.Objects;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.activity.DashboardActivity;
-import br.com.pererao.activity.UpdateProfileActivity;
 
 public class Configuration extends AppCompatActivity {
 
     SharedPref sharedPref;
-    MaterialButton btn_edit_account, DarkMode;
+    MaterialButton DarkMode;
     int checkedItem = 0;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
@@ -62,7 +58,6 @@ public class Configuration extends AppCompatActivity {
             }
         });
 
-        btn_edit_account = findViewById(R.id.btn_edit_account);
         DarkMode = findViewById(R.id.DarkMode);
 
         //Tema Escuro Botão
@@ -70,17 +65,6 @@ public class Configuration extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showAlertDialogDarkMode();
-            }
-        });
-
-        btn_edit_account.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), UpdateProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
-                ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
-                finish();
             }
         });
 

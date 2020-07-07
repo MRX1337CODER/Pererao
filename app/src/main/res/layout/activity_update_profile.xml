@@ -44,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/user_image"
             android:layout_marginTop="40dp"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -85,7 +84,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_username"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -127,7 +125,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/ll_email"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout

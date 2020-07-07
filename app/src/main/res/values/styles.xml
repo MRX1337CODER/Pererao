@@ -35,6 +35,9 @@
 
     <!--FullScreen Theme-->
     <style name="AppTheme.FullScreen" parent="AppTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:background">@color/textColorInvert</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>

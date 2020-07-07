@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +32,7 @@ import java.util.Objects;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.activity.DashboardActivity;
+import br.com.pererao.activity.LoadingDialog;
 import br.com.pererao.adapter.UserAdapter;
 import br.com.pererao.model.User;
 
@@ -41,6 +43,7 @@ public class MapActivity extends AppCompatActivity {
     private UserAdapter userAdapter;
     private List<User> mUser;
     private static final String USUARIO = "Usuario";
+    LoadingDialog loadingDialog = new LoadingDialog(MapActivity.this);
     RelativeLayout relativeLayout;
     FirebaseAuth mFirebaseAuth;
     FirebaseUser mFirebaseUser;
@@ -68,6 +71,7 @@ public class MapActivity extends AppCompatActivity {
                 gotoDashboardActivity();
             }
         });
+        loadingDialog.startLoadingDialog();
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -110,11 +114,13 @@ public class MapActivity extends AppCompatActivity {
                 mUser.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
-
+                    loadingDialog.dismissDialog();
                     assert user != null;
                     assert firebaseUser != null;
                     if (!user.getId().equals(firebaseUser.getUid())) {
                         mUser.add(user);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Sem Usuários", Toast.LENGTH_SHORT).show();
                     }
                     Context context = getApplicationContext();
                     userAdapter = new UserAdapter(context, mUser, false);

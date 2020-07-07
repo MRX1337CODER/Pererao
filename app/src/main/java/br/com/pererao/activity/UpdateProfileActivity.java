@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +24,7 @@ import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,7 +48,6 @@ import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
-import br.com.pererao.activity.ui.configuration.Configuration;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -62,7 +67,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     Toolbar toolbar;
     LoadingDialog loadingDialog = new LoadingDialog(UpdateProfileActivity.this);
     SharedPref sharedPref;
-    String _ID, _USERNAME, _EMAIL, _PASSWORD, _USERURL, _SEARCH, userUrl;
+    String _ID, _USERNAME, _EMAIL, _USERURL, _SEARCH, userUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +114,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     _ID = user.getId();
                     _USERNAME = user.getNomeUser();
                     _EMAIL = user.getEmailUser();
-                    _PASSWORD = user.getSenhaUser();
                     _USERURL = user.getUserUrl();
                     _SEARCH = user.getSearch();
                     loadingDialog.dismissDialog();
@@ -150,7 +154,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
         et_username.setText(_USERNAME);
         et_email.setText(_EMAIL);
-        et_password.setText(_PASSWORD);
     }
 
     public void updatePhotoProfile() {
@@ -194,13 +197,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
         if (isNameChanged()) {
             Log.i(TAG, "Nome Atualizado");
         }
-        if (isPasswordChanged()) {
-            Log.i(TAG, "Senha Atualizada");
+        if (isPasswordChanged() || isEmailChanged()) {
+            Log.i(TAG, "Dado(s) Atualizado(s)");
         }
 
         if (imageUri != null) {
+            loadingDialog.startLoadingDialog();
             StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
-            final StorageReference imageFilePath = mStorageReference.child(mFirebaseUser.getUid()).child("profile").child(imageUri.getLastPathSegment());
+            final StorageReference imageFilePath = mStorageReference.child(mFirebaseUser.getUid()).child("profile").child("profile_image_user");//imageUri.getLastPathSegment());
             imageFilePath.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -210,6 +214,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     userUrl = uri.toString();
                                     updatePhoto(userUrl);
+                                    loadingDialog.dismissDialog();
+                                    imageUri = null;
                                 }
                             });
                         }
@@ -239,34 +245,60 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
     public boolean isPasswordChanged() {
         final String val = ti_et_password.getEditText().getText().toString();
-        if (!_PASSWORD.equals(val)) {
-            /*Map<String, Object> map = new HashMap<>();
-            map.put("senhaUser", val);
-            mDatabaseReference.updateChildren(map);
-            _PASSWORD = val;
-            Toast.makeText(getApplicationContext(), "Dado Atualizado Com Sucesso", Toast.LENGTH_SHORT).show();*/
-            openAlertDialog(val);
+        if (!TextUtils.isEmpty(val) && val.length() < 8) {
+            ti_et_password.setError("A nova senha deve conter no mínimo 8 caracteres");
+            return false;
+        } else if (TextUtils.isEmpty(val)) {
+            ti_et_password.setError(null);
+            return false;
+        } else {
+            openAlertDialog(val, 0, "Alterar Senha", "Ao Alterar Sua Senha Você Será Redirecionado A Tela Entrada.");
+            return true;
+        }
+    }
+
+    public boolean isEmailChanged() {
+        final String val = ti_et_email.getEditText().getText().toString();
+        if (!TextUtils.isEmpty(val) && !Patterns.EMAIL_ADDRESS.matcher(val).matches()) {
+            ti_et_email.setError("E-mail Inválido");
+            return false;
+        } else if (TextUtils.isEmpty(val)) {
+            ti_et_email.setError(null);
+            return false;
+        } else if (!_EMAIL.equals(val)) {
+            openAlertDialog(val, 1, "Alterar E-mail", "Ao alterar seu e-mail você será redirecionado a tela entrada e terá de validá-lo.");
             return true;
         } else {
+            ti_et_email.setError(null);
             return false;
         }
     }
 
-    public void openAlertDialog(final String pass) {
+    public void openAlertDialog(final String type, final int i, String title, String message) {
+        final EditText input = new EditText(UpdateProfileActivity.this);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(UpdateProfileActivity.this);
-        alertDialog.setTitle("Alterar Senha");
-        alertDialog.setMessage("Ao Alterar Sua Senha Você Será Redirecionado A Tela Entrada.");//Ao Alterar Seu E-mail Você Terá De Confirma-lo Novamente (ou algo assim)
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        input.setHint("Senha Atual");
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_lock_outline_black_24dp, 0, 0, 0);
+        alertDialog.setView(input);
+
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(message);
         alertDialog.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 loadingDialog.startLoadingDialog();
-                UserReauthentication(_PASSWORD ,pass);
+                String userpass = input.getText().toString();
+                UserReauthentication(userpass, type, i);
             }
         });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                et_password.setText(_PASSWORD);
                 dialog.dismiss();
             }
         });
@@ -276,9 +308,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
         alert.show();
     }
 
-    private void UserReauthentication(String UserPassword, final String newPass) {
+    private void UserReauthentication(String UserPassword, final String type, final int i) {
         String userEmail = mFirebaseUser.getEmail();
-        //final String newPass = ti_et_new_password.getEditText().getText().toString();
         assert userEmail != null;
         AuthCredential credential = EmailAuthProvider
                 .getCredential(userEmail, UserPassword);
@@ -287,8 +318,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Re-autenticação Feita Com Sucesso.", Toast.LENGTH_SHORT).show();
-                    ChangePassword(newPass);
+                    // Toast.makeText(getApplicationContext(), "Re-autenticação Feita Com Sucesso.", Toast.LENGTH_SHORT).show();
+                    ChangeEmailOrPassword(type, i);
                 } else {
                     Toast.makeText(getApplicationContext(), "Re-autenticação Infelizmente Falhou.", Toast.LENGTH_SHORT).show();
                     loadingDialog.dismissDialog();
@@ -297,41 +328,68 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void ChangeEmailOrPassword(final String type, final int i) {
+        if (i == 0) {
+            mFirebaseUser.updatePassword(type)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "Sua Senha Foi Alterado Com Êxito", Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismissDialog();
+                            }
+                        }
+                    });
+        } else {
+            mFirebaseUser.updateEmail(type)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("emailUser", type);
+                                mDatabaseReference.updateChildren(map);
+
+                                //Envia email de verificação
+                                mFirebaseUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(getApplicationContext(), "E-mail De Verificação Enviado, Clique Sobre Ele Para Confirmar", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getApplicationContext(), "Falha Ao Enviar E-mail de Verificação.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                                Toast.makeText(getApplicationContext(), "Seu E-mail Foi Alterado Com Êxito", Toast.LENGTH_SHORT).show();
+                                loadingDialog.dismissDialog();
+                            }
+                        }
+                    });
+        }
+        mFirebaseAuth.signOut();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     private void ChangePassword(final String newPass) {
         mFirebaseUser.updatePassword(newPass)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            //mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO + "/" + mFirebaseUser.getUid());
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("senhaUser", newPass);
-                            mDatabaseReference.updateChildren(map);
-                            _PASSWORD = newPass;
-
                             Toast.makeText(getApplicationContext(), "Sua Senha Foi Alterado Com Êxito", Toast.LENGTH_SHORT).show();
                             loadingDialog.dismissDialog();
-                            mFirebaseAuth.signOut();
-                            Intent intent = new Intent(UpdateProfileActivity.this, LoginActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
                         }
                     }
                 });
     }
-
-    /*public boolean isEmailChanged() {
-        final String val = ti_et_email.getEditText().getText().toString();
-        if (!_PASSWORD.equals(val)) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("senhaUser", val);
-            mDatabaseReference.updateChildren(map);
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 
     @Override
     public void onBackPressed() {

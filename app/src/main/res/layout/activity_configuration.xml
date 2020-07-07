@@ -24,25 +24,6 @@
             android:orientation="vertical">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edit_account"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginEnd="25dp"
-                android:layout_marginRight="25dp"
-                android:padding="19.5dp"
-                android:text="@string/update_profile"
-                android:textAllCaps="false"
-                android:textColor="?attr/TextColor"
-                android:textSize="14sp"
-                android:textStyle="normal"
-                app:backgroundTint="#803D7AFE"
-                app:strokeColor="@android:color/transparent" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/DarkMode"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
@@ -55,9 +36,14 @@
                 android:padding="19.5dp"
                 android:text="@string/dark_mode"
                 android:textAllCaps="false"
+                app:icon="@drawable/ic_darkmode"
+                app:iconGravity="start"
+                app:iconSize="24dp"
+                app:iconPadding="15dp"
                 android:textColor="?attr/TextColor"
                 android:textSize="14sp"
                 android:textStyle="normal"
+                app:iconTint="@null"
                 app:backgroundTint="#801D2639"
                 app:strokeColor="@android:color/transparent" />
 

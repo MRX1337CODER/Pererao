@@ -52,7 +52,6 @@
                 android:layout_marginTop="15dp"
                 android:maxWidth="300dp"
                 android:singleLine="true"
-                android:text="@string/hint_name_register"
                 android:textColor="@color/textColor"
                 android:textSize="20sp" />
 
@@ -63,7 +62,6 @@
                 android:layout_marginTop="7dp"
                 android:maxWidth="300dp"
                 android:singleLine="true"
-                android:text="@string/hint_email"
                 android:textColor="@color/textColor"
                 android:textSize="16sp" />
 
