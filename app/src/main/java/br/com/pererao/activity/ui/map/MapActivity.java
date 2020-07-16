@@ -3,6 +3,9 @@ package br.com.pererao.activity.ui.map;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -104,6 +107,28 @@ public class MapActivity extends AppCompatActivity {
         status("Off-line");
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup_map, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_map:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+                ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void readUsers() {
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference(USUARIO);
@@ -117,10 +142,8 @@ public class MapActivity extends AppCompatActivity {
                     loadingDialog.dismissDialog();
                     assert user != null;
                     assert firebaseUser != null;
-                    if (!user.getId().equals(firebaseUser.getUid())) {
+                    if (!user.getId().equals(firebaseUser.getUid()) && user.isPrestador()) {
                         mUser.add(user);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Sem Usuários", Toast.LENGTH_SHORT).show();
                     }
                     Context context = getApplicationContext();
                     userAdapter = new UserAdapter(context, mUser, false);

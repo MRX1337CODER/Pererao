@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -26,6 +27,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
+
+        <!--
+            The API key for Google Maps-based APIs is defined as a string resource.
+            (See the file "res/values/google_maps_api.xml").
+            Note that the API key is linked to the encryption key used to sign the APK.
+            You need a different API key for each encryption key, including the release key that is used to
+            sign the APK for publishing.
+            You can define the keys for the debug and release targets in src/debug/ and src/release/.
+       -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".activity.SplashScreen"
             android:screenOrientation="portrait"
@@ -90,6 +104,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.UpdateProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.ui.map.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

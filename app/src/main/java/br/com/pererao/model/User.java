@@ -1,5 +1,7 @@
 package br.com.pererao.model;
 
+import java.util.List;
+
 public class User {
 
     private String id;
@@ -10,18 +12,23 @@ public class User {
     private String search;
     private float rating;
     private boolean isPrestador;
+    private int size;
+    private List<String> list;
 
-    public User() {}
+    public User() {
+    }
 
-    public User(String id, String nomeUser, String emailUser, String userUrl, String status, String search, float rating, boolean isPrestador) {
+    public User(String id, String nomeUser, String emailUser, String userUrl, String status, String search, float rating, boolean isPrestador, int size, List<String> list) {
         this.id = id;
         this.nomeUser = nomeUser;
         this.emailUser = emailUser;
         this.userUrl = userUrl;
         this.status = status;
         this.search = search;
-        this.rating = rating;
         this.isPrestador = isPrestador;
+        this.rating = rating;
+        this.size = size;
+        this.list = list;
     }
 
     public String getNomeUser() {
@@ -86,5 +93,21 @@ public class User {
 
     public void setPrestador(boolean prestador) {
         isPrestador = prestador;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public List<String> getList() {
+        return list;
+    }
+
+    public void setList(List<String> list) {
+        this.list = list;
     }
 }

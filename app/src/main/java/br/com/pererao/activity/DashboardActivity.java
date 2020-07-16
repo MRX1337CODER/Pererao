@@ -43,7 +43,6 @@ import java.util.HashMap;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
-import br.com.pererao.activity.firebase.DatabaseReferenceHelper;
 import br.com.pererao.activity.firebase.FirebaseHelper;
 import br.com.pererao.activity.ui.chat.ChatActivity;
 import br.com.pererao.activity.ui.configuration.Configuration;
@@ -113,17 +112,19 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             mDatabaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    int unread = 0;
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        Chat chat = snapshot.getValue(Chat.class);
-                        if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()) {
-                            unread++;
+                    if (dataSnapshot.exists()) {
+                        int unread = 0;
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Chat chat = snapshot.getValue(Chat.class);
+                            if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()) {
+                                unread++;
+                            }
                         }
-                    }
-                    if (unread == 0) {
-                        new_message.setVisibility(View.GONE);
-                    } else {
-                        new_message.setVisibility(View.VISIBLE);
+                        if (unread == 0) {
+                            new_message.setVisibility(View.GONE);
+                        } else {
+                            new_message.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
 
@@ -136,23 +137,24 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             mDatabaseReference.child(USUARIO).child(mFirebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    if (user == null || user.getNomeUser() == null) {
-                        gotoLoginActivity();
-                    }
-                    assert user != null;
-                    tv_username.setText(user.getNomeUser());
-                    tv_email.setText(user.getEmailUser());
+                    if (dataSnapshot.exists()) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user == null || user.getNomeUser() == null) {
+                            gotoLoginActivity();
+                        }
+                        assert user != null;
+                        tv_username.setText(user.getNomeUser());
+                        tv_email.setText(user.getEmailUser());
 
-                    if (user.getUserUrl().equals("default")) {
-                        user_image.setImageResource(R.drawable.ic_user_icon);
-                    } else {
-                        Glide.with(getApplicationContext())
-                                .load(user.getUserUrl())
-                                .into(user_image);
+                        if (user.getUserUrl().equals("default")) {
+                            user_image.setImageResource(R.drawable.ic_user_icon);
+                        } else {
+                            Glide.with(getApplicationContext())
+                                    .load(user.getUserUrl())
+                                    .into(user_image);
+                        }
+                        loadingDialog.dismissDialog();
                     }
-                    loadingDialog.dismissDialog();
-
                 }
 
                 @Override
@@ -167,8 +169,6 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
         btn_maps.setOnClickListener(this);
         btn_chat.setOnClickListener(this);
         btn_configuration.setOnClickListener(this);
-
-
     }
 
     private void checkUpdateApp() {

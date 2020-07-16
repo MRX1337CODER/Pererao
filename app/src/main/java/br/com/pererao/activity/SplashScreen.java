@@ -36,7 +36,7 @@ public class SplashScreen extends AppCompatActivity {
                     /**
                      * Cria uma Intent que vai iniciar a OnbardingActivity (neste caso).
                      **/
-                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);//verify//OnboardingActivity
+                    Intent intent = new Intent(SplashScreen.this, LoginActivity.class);//verify//OnboardingActivity//Login
                     startActivity(intent);
                     finish();
                 }

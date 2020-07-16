@@ -1,0 +1,102 @@
+[
+  {
+    "cod": "6230-05",
+    "desc": "Adestrador de animais"
+  },
+  {
+    "cod": "3548-15",
+    "desc": "Agente de viagem"
+  },
+  {
+    "cod": "7630-05",
+    "desc": "Alfaiate"
+  },
+  {
+    "cod": "2141-05",
+    "desc": "Arquiteto"
+  },
+  {
+    "cod": "5162-05",
+    "desc": "Babá"
+  },
+  {
+    "cod": "5161-05",
+    "desc": "Barbeiro"
+  },
+  {
+    "cod": "5134-20",
+    "desc": "Barman"
+  },
+  {
+    "cod": "9921-15",
+    "desc": "Borracheiro"
+  },
+  {
+    "cod": "5161-10",
+    "desc": "Cabeleireiro"
+  },
+  {
+    "cod": "7155-05",
+    "desc": "Carpinteiro"
+  },
+  {
+    "cod": "6220-05",
+    "desc": "Caseiro (agricultura)"
+  },
+  {
+    "cod": "5231-15",
+    "desc": "Chaveiro"
+  },
+  {
+    "cod": "5132-05",
+    "desc": "Cozinheiro geral"
+  },
+  {
+    "cod": "3413-15",
+    "desc": "Eletricista"
+  },
+  {
+    "cod": "2144-25",
+    "desc": "Engenheiro"
+  },
+  {
+    "cod": "5199-15",
+    "desc": "Engraxate"
+  },
+  {
+    "cod": "5143-20",
+    "desc": "Faxineiro"
+  },
+  {
+    "cod": "5134-05",
+    "desc": "Garçom"
+  },
+  {
+    "cod": "5161-25",
+    "desc": "Maquiador"
+  },
+  {
+    "cod": "7165-25",
+    "desc": "Marmorista (construção)"
+  },
+  {
+    "cod": "9141-05",
+    "desc": "Mecânico"
+  },
+  {
+    "cod": "7152-10",
+    "desc": "Pedreiro"
+  },
+  {
+    "cod": "5136-10",
+    "desc": "Pizzaiolo"
+  },
+  {
+    "cod": "7163-05",
+    "desc": "Vidraceiro"
+  },
+  {
+    "cod": "5174-20",
+    "desc": "Vigia"
+  }
+]

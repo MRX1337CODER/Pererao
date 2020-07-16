@@ -13,7 +13,6 @@
     <string name="tv_login">Entre</string>
     <string name="create_account_login">Não Possuo Uma Conta</string>
     <string name="forgot_password_login">Esqueci Minha Senha</string>
-    <string name="or_enter_with">Ou Entre Com</string>
     <!--Login-->
 
     <!--Cadastro-->
@@ -36,12 +35,7 @@
     <!--Endereço-->
 
     <!--Prestador-->
-    <string name="qualifications">Adicionar Qualificações</string>
-    <string name="qualification_programmer">Programador</string>
-    <string name="qualification_mechanical">Mecânico</string>
-    <string name="qualification_plumber">Encanador</string>
-    <string name="qualification_eletricista">Eletricista</string>
-    <string name="qualification_chaveiro">Chaveiro</string>
+    <string name="qualifications">Qualificações</string>
     <!--Prestador-->
 
     <!--Outros-->
@@ -55,8 +49,6 @@
     <string name="exit_app">Sair</string>
     <string name="help">Ajuda</string>
 
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="write_message">Digite uma mensagem</string>
     <string name="pre_orcamento">Pré-Orçamento</string>
     <string name="update_data">Atualizar Dados</string>
@@ -65,13 +57,11 @@
     <string name="cancel">Cancelar</string>
     <string name="submit">Enviar</string>
 
-
-    <!--string name="new_email">Digite Seu Novo E-mail</string>
-    <string name="new_password">Digite Sua Nova Senha</string-->
     <string name="old_email">Digite Seu E-mail Atual</string>
     <string name="old_password">Digite Sua Senha Atual</string>
     <string name="read_more">Ler Mais</string>
     <string name="read_less">Ler Menos</string>
+    <string name="search">Buscar</string>
     <!--Outros-->
 
 </resources>

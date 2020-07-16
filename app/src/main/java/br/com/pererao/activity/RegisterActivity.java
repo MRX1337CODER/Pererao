@@ -40,6 +40,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import br.com.pererao.Network;
@@ -318,14 +319,31 @@ public class RegisterActivity extends AppCompatActivity {
         String status = "Off-line";
         String search = name.toLowerCase();
         float rating = 0;
-        user = new User(id, name, email, url, status, search, rating, isPrestador);
+        user = new User();
+        user.setId(id);
+        user.setNomeUser(name);
+        user.setEmailUser(email);
+        user.setUserUrl(url);
+        user.setStatus(status);
+        user.setSearch(search);
+        user.setRating(rating);
+        user.setPrestador(isPrestador);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id", user.getId());
+        hashMap.put("nomeUser", user.getNomeUser());
+        hashMap.put("emailUser", user.getEmailUser());
+        hashMap.put("userUrl", user.getUserUrl());
+        hashMap.put("status", user.getStatus());
+        hashMap.put("search", user.getSearch());
+        hashMap.put("rating", user.getRating());
+        hashMap.put("prestador", user.isPrestador());
         loadingDialog.dismissDialog();
         //Adiciona dados do usuário no FB
-        mDatabaseReference.child(id).setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+        mDatabaseReference.child(id).setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 LimparCampos();
-                if (isPrestador = true) {
+                if (isPrestador) {
                     gotoQualificationActivity();
                 } else {
                     gotoVerifyAccount();

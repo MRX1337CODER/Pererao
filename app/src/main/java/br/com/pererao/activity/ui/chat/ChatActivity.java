@@ -91,9 +91,6 @@ public class ChatActivity extends AppCompatActivity {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
-                if (userAdapter == null){
-                    Toast.makeText(getApplicationContext(), "Sem Mensagens Recentes", Toast.LENGTH_SHORT).show();
-                }
                 chatList();
             }
 
