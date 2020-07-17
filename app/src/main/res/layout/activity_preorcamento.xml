@@ -35,32 +35,17 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorAccent"
-                android:padding="5dp"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:layout_width="1dp"
-                android:layout_height="28dp"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal"
-                android:background="@color/colorAccent"
-                android:padding="5dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_outline"
-                android:padding="5dp"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:padding="5dp"
                     android:id="@+id/textView4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="-1dp"
+                    android:background="@drawable/bg_outline"
                     android:layout_weight="1"
                     android:gravity="start"
                     android:text="Data: 01/08/2020"
@@ -71,41 +56,26 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="-1dp"
                     android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/bg_outline"
                     android:gravity="end"
                     android:text="Validade: 15/04/2020"
                     android:textSize="16sp" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/colorAccent"
-                android:padding="5dp"
-                android:visibility="gone" />
-
             <TextView
+                android:background="@drawable/bg_outline"
                 android:id="@+id/textView6"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
-                android:layout_marginTop="6dp"
+                android:padding="5dp"
                 android:gravity="center_vertical"
                 android:maxLines="2"
                 android:text="Nº Orçamento: 00001"
                 android:textSize="16sp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="1dp"
-                android:background="@color/colorAccent"
-                android:padding="5dp"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/textView7"
