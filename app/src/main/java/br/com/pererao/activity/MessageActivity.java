@@ -313,11 +313,20 @@ public class MessageActivity extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                    Chat chat = snapshot.getValue(Chat.class);
+                    final Chat chat = snapshot.getValue(Chat.class);
                     assert chat != null;
 
                     if (chat.getReceiver().equals(myId) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(myId)) {
                         mChat.add(chat);
+                    }
+                    if (chat.getReceiver().equals(myId) && chat.getSender().equals(userId)) {
+                        imb_send_message.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                mChat.remove(chat);
+                                return true;
+                            }
+                        });
                     }
                     messageAdapter = new MessageAdapter(MessageActivity.this, mChat, dateMessage);
                     recyclerView.setAdapter(messageAdapter);

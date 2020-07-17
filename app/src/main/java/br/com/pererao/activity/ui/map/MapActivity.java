@@ -140,14 +140,18 @@ public class MapActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
                     loadingDialog.dismissDialog();
-                    assert user != null;
-                    assert firebaseUser != null;
-                    if (!user.getId().equals(firebaseUser.getUid()) && user.isPrestador()) {
-                        mUser.add(user);
+                    if (snapshot.exists()) {
+                        assert user != null;
+                        assert firebaseUser != null;
+                        if (!user.getId().equals(firebaseUser.getUid())) {
+                            if (user.isPrestador()) {
+                                mUser.add(user);
+                            }
+                        }
+                        Context context = getApplicationContext();
+                        userAdapter = new UserAdapter(context, mUser, false);
+                        recyclerView.setAdapter(userAdapter);
                     }
-                    Context context = getApplicationContext();
-                    userAdapter = new UserAdapter(context, mUser, false);
-                    recyclerView.setAdapter(userAdapter);
                 }
             }
 
