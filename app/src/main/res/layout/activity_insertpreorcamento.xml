@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PreOrcamentoActivity">
+
+    <ScrollView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/app_bar"
+                    layout="@layout/app_bar_toolbar" />
+
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/app_bar"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/et_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="1.5dp"
+                            android:layout_marginTop="50dp"
+                            android:background="@drawable/bg_outline"
+                            android:gravity="center_horizontal"
+                            android:hint="Item"
+                            android:inputType="text"
+                            android:padding="15dp"
+                            android:textSize="16sp"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <EditText
+                            android:id="@+id/et_item_qtde"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="1.5dp"
+                            android:layout_marginTop="50dp"
+                            android:background="@drawable/bg_outline"
+                            android:gravity="center_horizontal"
+                            android:hint="Quantidade"
+                            android:inputType="number"
+                            android:digits="1234567890"
+                            android:padding="15dp"
+                            android:textSize="16sp"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <EditText
+                            android:id="@+id/et_item_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginStart="1.5dp"
+                            android:layout_marginTop="50dp"
+                            android:background="@drawable/bg_outline"
+                            android:gravity="center_horizontal"
+                            android:hint="Valor"
+                            android:digits="1234567890."
+                            android:inputType="number"
+                            android:padding="15dp"
+                            android:textSize="16sp"
+                            tools:ignore="Autofill,LabelFor,TextFields" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="30dp">
+
+                            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                android:id="@+id/fab_add_itens"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="7dp"
+                                android:layout_marginEnd="30dp"
+                                android:layout_marginBottom="30dp"
+                                android:src="@drawable/ic_more_add_item"
+                                app:elevation="3dp"
+                                app:fabCustomSize="60dp"
+                                app:fabSize="normal"
+                                app:maxImageSize="50dp"
+                                tools:ignore="PrivateResource,RelativeOverlap" />
+
+                        </RelativeLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

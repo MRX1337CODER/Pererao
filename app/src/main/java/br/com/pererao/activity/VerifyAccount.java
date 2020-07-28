@@ -97,6 +97,12 @@ public class VerifyAccount extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
+
+    @Override
     public void onBackPressed() {
         gotoLogin();
     }

@@ -3,6 +3,7 @@ package br.com.pererao.notifications;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import br.com.pererao.R;
 import br.com.pererao.activity.MessageActivity;
 
 public class MyFirebaseMessaging extends FirebaseMessagingService {
@@ -58,10 +60,10 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
-        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/notification_receiver"); //RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         OreoNotifications oreoNotifications = new OreoNotifications(this);
-        Notification.Builder builder = oreoNotifications.getOreoNotification(title, body, pendingIntent, defaultSound, icon);
+        Notification.Builder builder = oreoNotifications.getOreoNotification(title, body, pendingIntent, sound, icon);
 
         int i = 0;
         if (j > 0) {
@@ -84,14 +86,14 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, j, intent, PendingIntent.FLAG_ONE_SHOT);
-        Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + getPackageName() + "/raw/notification_receiver"); //RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(Integer.parseInt(icon))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
-                .setSound(defaultSound)
+                .setSound(sound)
                 .setContentIntent(pendingIntent);
         NotificationManager noti = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 

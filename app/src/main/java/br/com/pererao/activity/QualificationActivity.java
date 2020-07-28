@@ -61,7 +61,6 @@ public class QualificationActivity extends AppCompatActivity implements SearchVi
     private static final String USUARIO = "Usuario";
     RecyclerView recyclerView;
     StringBuilder sb = null;
-    //StringBuilder sbCode = null;
     DatabaseReference mDatabaseReference;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
@@ -108,9 +107,8 @@ public class QualificationActivity extends AppCompatActivity implements SearchVi
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject itemObj = jsonArray.getJSONObject(i);
                 String desc = itemObj.getString("desc");
-                String cod = itemObj.getString("cod");
 
-                Qualifications qualifications = new Qualifications(desc, cod);
+                Qualifications qualifications = new Qualifications(desc);
                 mQualifications.add(qualifications);
 
             }

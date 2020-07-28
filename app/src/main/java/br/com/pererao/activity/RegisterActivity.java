@@ -1,7 +1,16 @@
 package br.com.pererao.activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
@@ -21,6 +30,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +51,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -47,18 +60,14 @@ import br.com.pererao.Network;
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
 import br.com.pererao.SnackBarCustom;
-import br.com.pererao.activity.firebase.FirebaseHelper;
 import br.com.pererao.model.User;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private TextInputEditText et_fullname, et_email, et_confirm_email, et_password, et_confirm_password;
     TextInputLayout ti_et_name, ti_et_email, ti_et_confirm_email, ti_et_password, ti_et_confirm_password;
     ImageButton imb_register;
-    CircleImageView img_user;
-    ImageView img_more;
-    Uri imageUri;
+    ImageView img_user, img_more;
     MaterialButton btn_gotoLoginActivity;
     String UserID, userUrl;
     RelativeLayout relativeLayout;
@@ -66,7 +75,14 @@ public class RegisterActivity extends AppCompatActivity {
     boolean isPrestador = false;
     static final String USUARIO = "Usuario";
     private static final String TAG = "RegisterActivityTAG";
-    private static final int REQUEST_IMAGE_CAPTURE = 100;
+
+    public final int REQ_CD_CAM = 101;
+    private Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private File _file_cam;
+
+    private String imagePath = "";
+    private String imageName = "";
+
     LoadingDialog loadingDialog = new LoadingDialog(RegisterActivity.this);
     SharedPref sharedPref;
     Toolbar toolbar;
@@ -127,6 +143,12 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1000);
+        }
+
         //Setando UID aleatorio pelo firebase
         FirebaseUser usernull = FirebaseAuth.getInstance().getCurrentUser();
         if (usernull != null) {
@@ -150,16 +172,27 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        _file_cam = FileUtil.createNewPictureFile(getApplicationContext());
+        Uri _uri_cam = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            _uri_cam = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", _file_cam);
+        } else {
+            _uri_cam = Uri.fromFile(_file_cam);
+        }
+        cam.putExtra(MediaStore.EXTRA_OUTPUT, _uri_cam);
+        cam.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
         img_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePictureIntent();
+                startActivityForResult(cam, REQ_CD_CAM);
             }
         });
+
         img_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                takePictureIntent();
+                startActivityForResult(cam, REQ_CD_CAM);
             }
         });
 
@@ -176,23 +209,46 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
-    private void takePictureIntent() {
-        Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (photo.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(photo, REQUEST_IMAGE_CAPTURE);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1000) {
+            Log.w("K", "k");
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            Glide.with(getApplicationContext())
-                    .load(imageUri)
-                    .into(img_user);
+        switch (requestCode) {
+            case REQ_CD_CAM:
+                if (resultCode == RESULT_OK) {
+                    //imageUri = data.getData();
+                    String _filePath = _file_cam.getAbsolutePath();
+
+                    imagePath = _filePath;
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = CorrigeFoto.carrega(imagePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    //img_user.setImageBitmap(bitmap);
+                    Glide.with(getApplicationContext())
+                            .load(bitmap)
+                            .into(img_user);
+
+                    imageName = Uri.parse(_filePath).getLastPathSegment();
+                    Log.w("SLA", "Path:" + imagePath + "\nName:" + imageName);
+
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -274,7 +330,7 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         });
 
-                        updateUserInfo(name, email, imageUri, id);
+                        updateUserInfo(name, email, Uri.fromFile(new File(imagePath)), id);
 
                     } else {
                         imb_register.setEnabled(true);
@@ -291,10 +347,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void updateUserInfo(final String name, final String email, final Uri imageUri, final String id) {
 
-        //String userUrl = "default";
         if (imageUri == null) {
             userUrl = "default";
             saveUser(id, name, email, userUrl);
+            imb_register.setEnabled(false);
         } else {
             StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
             final StorageReference imageFilePath = mStorageReference.child(id).child("profile").child("profile_image_user");//imageUri.getLastPathSegment());
@@ -307,6 +363,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     userUrl = uri.toString();
                                     saveUser(id, name, email, userUrl);
+                                    imb_register.setEnabled(false);
                                 }
                             });
                         }

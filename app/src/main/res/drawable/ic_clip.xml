@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="226"
+    android:viewportHeight="226">
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillType="nonZero"
+        android:pathData="M158.906,2.825c-12.768,0 -25.32,4.949 -35.004,14.633l-86.074,86.074c-27.293,27.293 -27.293,71.693 0,98.985c27.293,27.293 71.693,27.293 98.985,0l57.383,-57.383l-12.911,-12.911l-57.383,57.383c-20.263,20.263 -52.9,20.263 -73.163,0c-20.263,-20.263 -20.263,-52.9 0,-73.163l86.074,-86.074c12.337,-12.337 32.134,-12.337 44.472,0c12.337,12.337 12.337,32.134 0,44.472l-86.074,86.074c-4.411,4.411 -11.369,4.411 -15.78,0c-4.411,-4.411 -4.411,-11.369 0,-15.78l78.901,-78.901l-12.911,-12.911l-78.901,78.901c-11.441,11.441 -11.441,30.162 0,41.603c11.441,11.441 30.162,11.441 41.603,0l86.074,-86.074c19.367,-19.367 19.367,-50.927 0,-70.294c-9.683,-9.683 -22.523,-14.633 -35.29,-14.633z"
+        android:strokeWidth="1"
+        android:strokeColor="#00000000"
+        android:strokeLineCap="butt"
+        android:strokeLineJoin="miter"
+        tools:ignore="VectorRaster" />
+</vector>

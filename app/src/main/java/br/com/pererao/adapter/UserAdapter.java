@@ -1,5 +1,7 @@
 package br.com.pererao.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -34,6 +36,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private List<User> mUser;
     private boolean isChat;
     String theLastMessage;
+    public static final int VIEW_TYPE_USER = 0;
+    public static final int VIEW_TYPE_EMPTY = 1;
+    //Animation Fade
+    long DURATION = 100;
+    private boolean on_attach = true;
 
     public UserAdapter(Context mContext, List<User> mUser, boolean isChat) {
         this.mContext = mContext;
@@ -44,8 +51,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_user, parent, false);
-        return new UserAdapter.ViewHolder(view);
+        View view;
+        ViewHolder viewHolder;
+        if (viewType == VIEW_TYPE_USER) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view_empty, parent, false);
+        }
+        viewHolder = new ViewHolder(view);
+        return viewHolder;
     }
 
     @Override
@@ -90,6 +104,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 mContext.startActivity(intent);
             }
         });
+
+
+        setAnimation(holder.itemView, position);
     }
 
     @Override
@@ -117,17 +134,39 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
+    private void setAnimation(View itemView, int i) {
+        if (!on_attach) {
+            i = -1;
+        }
+        boolean isNotFirstItem = i == -1;
+        i++;
+        itemView.setAlpha(0.f);
+        AnimatorSet animatorSet = new AnimatorSet();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(itemView, "alpha", 0.f, 0.5f, 1.0f);
+        ObjectAnimator.ofFloat(itemView, "alpha", 0.f).start();
+        animator.setStartDelay(isNotFirstItem ? DURATION / 2 : (i * DURATION / 3));
+        animator.setDuration(500);
+        animatorSet.play(animator);
+        animator.start();
+    }
+
     private void lastMessage(final String userid, final TextView last_msg) {
         theLastMessage = "default";
         final FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat");
+        assert mFirebaseUser != null;
+        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat").child("Mensagens");
         mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
+                    assert chat != null;
                     if (chat.getReceiver().equals(mFirebaseUser.getUid()) && chat.getSender().equals(userid) || chat.getReceiver().equals(userid) && chat.getSender().equals(mFirebaseUser.getUid())) {
-                        theLastMessage = chat.getMessage();
+                        if (chat.getMessage().equals("")) {
+                            theLastMessage = "Foto 📷";
+                        } else {
+                            theLastMessage = chat.getMessage();
+                        }
                     }
                 }
 
@@ -148,6 +187,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
             }
         });
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mUser.size() == 0) {
+            return VIEW_TYPE_EMPTY;
+        } else {
+            return VIEW_TYPE_USER;
+        }
     }
 
 }

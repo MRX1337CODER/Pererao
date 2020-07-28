@@ -1,8 +1,13 @@
 package br.com.pererao.activity;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -21,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,12 +49,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import br.com.pererao.R;
 import br.com.pererao.SharedPref;
+import br.com.pererao.activity.ui.home.HomeActivity;
 import br.com.pererao.model.User;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,9 +68,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private static final String USUARIO = "Usuario";
     TextInputEditText et_username, et_email, et_password;
     TextInputLayout ti_et_username, ti_et_email, ti_et_password;
-    CircleImageView img_user;
-    ImageView iv_more;
-    Uri imageUri;
+    ImageView img_user, iv_more;
+
+    public final int REQ_CD_CAM = 101;
+    private Intent cam = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    private File _file_cam;
+    private String imagePath = "";
+    private String imageName = "";
+
     DatabaseReference mDatabaseReference;
     FirebaseUser mFirebaseUser;
     FirebaseAuth mFirebaseAuth;
@@ -132,19 +147,55 @@ public class UpdateProfileActivity extends AppCompatActivity {
             }
         });
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        _file_cam = FileUtil.createNewPictureFile(getApplicationContext());
+        Uri _uri_cam = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            _uri_cam = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".provider", _file_cam);
+        } else {
+            _uri_cam = Uri.fromFile(_file_cam);
+        }
+        cam.putExtra(MediaStore.EXTRA_OUTPUT, _uri_cam);
+        cam.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         img_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updatePhotoProfile();
+                if (cam.resolveActivity(getPackageManager()) != null) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+                    startActivityForResult(cam, REQ_CD_CAM);
+                }
             }
         });
+
         iv_more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updatePhotoProfile();
+                if (cam.resolveActivity(getPackageManager()) != null) {
+                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+                    startActivityForResult(cam, REQ_CD_CAM);
+                }
             }
         });
+
+        /*lnrtakeimage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View _view) {
+                imagem_selecionada.setVisibility(View.VISIBLE);
+                startActivityForResult(file, REQ_CD_FILE);
+            }
+        });
+
+        linear17.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View _view) {
+                imagem_selecionada.setVisibility(View.VISIBLE);
+                startActivityForResult(takeImage, REQ_CD_TAKEIMAGE);
+            }
+        });*/
 
     }
 
@@ -161,21 +212,35 @@ public class UpdateProfileActivity extends AppCompatActivity {
         et_email.setText(_EMAIL);
     }
 
-    public void updatePhotoProfile() {
-        Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (photo.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(photo, REQUEST_IMAGE_CAPTURE);
-        }
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK && data != null) {
-            imageUri = data.getData();
-            Glide.with(getApplicationContext())
-                    .load(imageUri)
-                    .into(img_user);
+        switch (requestCode) {
+            case REQ_CD_CAM:
+                if (resultCode == RESULT_OK) {
+                    //imageUri = data.getData();
+                    String _filePath = _file_cam.getAbsolutePath();
+
+                    imagePath = _filePath;
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = CorrigeFoto.carrega(imagePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    //img_user.setImageBitmap(bitmap);
+                    Glide.with(getApplicationContext())
+                            .load(bitmap)
+                            .into(img_user);
+
+                    imageName = Uri.parse(_filePath).getLastPathSegment();
+                    Log.w("SLA", "Path:" + imagePath + "\nName:" + imageName);
+
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -206,11 +271,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
             Log.i(TAG, "Dado(s) Atualizado(s)");
         }
 
-        if (imageUri != null) {
+        Uri Uriimg = Uri.fromFile(new File(imagePath));
+        if (Uriimg != null) {
             loadingDialog.startLoadingDialog();
             StorageReference mStorageReference = FirebaseStorage.getInstance().getReference().child("user_photo");
             final StorageReference imageFilePath = mStorageReference.child(mFirebaseUser.getUid()).child("profile").child("profile_image_user");//imageUri.getLastPathSegment());
-            imageFilePath.putFile(imageUri)
+            imageFilePath.putFile(Uriimg)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -220,7 +286,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                                     userUrl = uri.toString();
                                     updatePhoto(userUrl);
                                     loadingDialog.dismissDialog();
-                                    imageUri = null;
+                                    //Uri.fromFile(new File(imagePath)) = null;
                                 }
                             });
                         }
@@ -383,19 +449,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         finish();
     }
 
-    private void ChangePassword(final String newPass) {
-        mFirebaseUser.updatePassword(newPass)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Sua Senha Foi Alterado Com Êxito", Toast.LENGTH_SHORT).show();
-                            loadingDialog.dismissDialog();
-                        }
-                    }
-                });
-    }
-
     @Override
     public void onBackPressed() {
         loadingDialog.dismissDialog();
@@ -403,7 +456,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     }
 
     private void gotoActivity() {
-        Intent intent = new Intent(UpdateProfileActivity.this, DashboardActivity.class);
+        Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(UpdateProfileActivity.this, intent, activityOptionsCompat.toBundle());

@@ -62,6 +62,9 @@
     <string name="read_more">Ler Mais</string>
     <string name="read_less">Ler Menos</string>
     <string name="search">Buscar</string>
+    <string name="empty">Vazio</string>
+    <string name="gallery">Galeria</string>
+    <string name="cam">Câmera</string>
     <!--Outros-->
 
 </resources>

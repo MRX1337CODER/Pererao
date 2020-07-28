@@ -38,12 +38,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import br.com.pererao.R;
-import br.com.pererao.activity.DashboardActivity;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     FusedLocationProviderClient client;
     AddressResultReceiver resultReceiver;
     GoogleMap mMap;
+    int cont = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-
     }
 
     @Override
@@ -109,32 +109,45 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d("teste", "Google Play up-to-date");
                 break;
 
-
-        }
+        }/**HM
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         M
+         MM**/
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-            alerta.setTitle("Precisamos da sua permissão");
-            alerta.setIcon(R.mipmap.ic_launcher)
-                    .setMessage("Para que você tenha acesso ao mapa precisamos que nos de sua permissão para acessar " +
-                            "sua localização")
-                    .setCancelable(false)
-                    .setNegativeButton("Negar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            Toast.makeText(getApplicationContext(), "Erro ao pegar localizar seu aparelho", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                    }).setPositiveButton("Permitir", new DialogInterface.OnClickListener() {
+            alerta.setTitle("Permissão de localização");
+            alerta.setIcon(R.mipmap.ic_launcher);
+            alerta.setMessage("Para que você tenha acesso ao mapa precisamos que nos conceda sua permissão para acessar sua localização.");
+            alerta.setCancelable(false);
+            alerta.setPositiveButton("Permitir", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
                 }
             });
+            alerta.setNegativeButton("Negar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    gotoMapsdActivity();
+                }
+            });
             AlertDialog alertDialog = alerta.create();
             alertDialog.show();
-        }
 
+        }
 
         client.getLastLocation()
                 .addOnSuccessListener(new OnSuccessListener<Location>() {
@@ -142,17 +155,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onSuccess(Location location) {
                         if (location != null) {
                             Log.i("teste", location.getLatitude() + " " + location.getLongitude());
+
+
                             /** TextView text  = (TextView) findViewById (R.id.textView);
                              text.setText("Sua Latitude é: " + location.getLatitude() +
                              "\nSua longitude é: " + location.getLongitude()); **/
 
 
+                            cont++;
                             LatLng origin = new LatLng(location.getLatitude(), location.getLongitude());
-                            LatLng seilaondevai = new LatLng(1000, 20000);
-                            mMap.addMarker(new MarkerOptions().position(origin).title("Estou aqui"));
-                            mMap.addMarker(new MarkerOptions().position(seilaondevai).title("Teste"));
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 20));
+                            if (cont == 1) {
+                                mMap.addMarker(new MarkerOptions().position(origin).title("Estou aqui"));
+                            }
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
 
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                                    alert.setTitle("Nome do prestador");
+                                    alert.setIcon(R.mipmap.ic_launcher);
+                                    alert.setMessage("Voce deseja ir até o chat desse prestador?");
+                                    alert.setCancelable(false);
+                                    alert.setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Toast.makeText(MainActivity.this, "Direcionado para o chat", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    alert.setNegativeButton("Não", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            return;
+                                        }
+                                    });
+                                    AlertDialog alertDialog = alert.create();
+                                    alertDialog.show();
+                                    return true;
+
+                                }
+                            });
+
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(origin, 20));
 
                         } else {
                             Log.i("teste", "null");
@@ -254,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this, addressOutput, Toast.LENGTH_SHORT).show();
-                        TextView text = findViewById(R.id.textView2);
+                        TextView text = (TextView) findViewById(R.id.textView2);
                         text.setText(addressOutput);
                     }
                 });

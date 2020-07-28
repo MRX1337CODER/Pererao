@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/BackgroundColor"
     tools:context=".activity.MessageActivity">
 
     <include
@@ -14,57 +13,153 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        tools:listitem="@layout/item_chat_right"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom"
         android:layout_below="@id/app_bar_chat" />
+
+    <RelativeLayout
+        android:id="@+id/rl_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom"
+        android:background="#80000000"
+        android:clickable="false"
+        android:layout_below="@id/app_bar_chat"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_preview_send_chat"
+            android:layout_margin="24dp"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_height="wrap_content"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/fecha_preview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="13dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/ic_close"
+            tools:ignore="ContentDescription" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?attr/White"
-        android:padding="5dp">
+        android:background="@android:color/transparent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ti_chat_message"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <include
+            android:id="@+id/intent"
+            layout="@layout/intent_foto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_toStartOf="@id/btn_send_message"
-            android:hint="@string/write_message"
-            android:textColorHint="?attr/TextColor"
-            app:boxCornerRadiusBottomStart="15dp"
-            app:boxCornerRadiusTopStart="15dp"
-            app:boxStrokeWidth="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@android:color/holo_red_light">
+            android:layout_below="@id/intent"
+            android:background="@color/textColor"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_chat_message"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/ll_opcao"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="7dp"
-                android:inputType="textMultiLine"
-                android:maxHeight="100dp"
-                android:padding="13dp"
-                android:textColor="?attr/textColorEditText" />
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:padding="4.5dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_open_close_opcao"
+                    style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:elevation="0dp"
+                    android:src="@drawable/ic_clip"
+                    android:tint="@color/textColorInvert"
+                    app:backgroundTint="@android:color/transparent"
+                    app:elevation="0dp"
+                    app:fabCustomSize="36dp"
+                    app:fabSize="mini" />
 
-        <ImageButton
-            android:id="@+id/btn_send_message"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/ic_send_black_24dp"
-            android:backgroundTint="?attr/attrPrimaryColorDark"
-            tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/ti_chat_message"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="4.5dp"
+                    app:boxBackgroundColor="@android:color/transparent"
+                    app:boxBackgroundMode="none"
+                    app:boxCornerRadiusBottomStart="15dp"
+                    app:boxCornerRadiusTopStart="15dp"
+                    app:boxStrokeColor="@android:color/transparent"
+                    app:boxStrokeWidth="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="5000"
+                    app:counterTextColor="@color/textColorInvert"
+                    app:endIconMode="clear_text"
+                    app:endIconTint="@android:color/holo_red_light"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_chat_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="-15dp"
+                        android:hint="@string/write_message"
+                        android:inputType="textMultiLine"
+                        android:maxHeight="100dp"
+                        android:maxLength="5000"
+                        android:padding="13dp"
+                        android:textColor="@color/textColorInvert"
+                        android:textColorHint="#CC7C7C7C" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_fab_send"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:padding="4.5dp"
+                android:visibility="gone">
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab_send_message"
+                    style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:elevation="0dp"
+                    android:scrollX="1.5dp"
+                    android:scrollY="-1.5dp"
+                    android:src="@drawable/ic_send"
+                    android:tint="@color/textColor"
+                    app:elevation="0dp"
+                    app:fabCustomSize="36dp"
+                    app:fabSize="mini" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

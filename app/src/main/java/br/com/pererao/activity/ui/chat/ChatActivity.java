@@ -139,6 +139,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         User user = snapshot.getValue(User.class);
+                        assert user != null;
                         for (Chatlist chatlist : usersList) {
                             if (user.getId().equals(chatlist.getId())) {
                                 mUser.add(user);
@@ -163,7 +164,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private void gotoDashboardActivity() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(), android.R.anim.fade_in, android.R.anim.fade_out);
         ActivityCompat.startActivity(getApplicationContext(), intent, activityOptionsCompat.toBundle());
         finish();

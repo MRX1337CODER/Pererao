@@ -12,7 +12,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.LOCATION_HARDWARE"
+    <uses-permission
+        android:name="android.permission.LOCATION_HARDWARE"
         tools:ignore="ProtectedPermissions" />
 
     <uses-feature
@@ -30,6 +31,16 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="br.com.pererao.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <!--
             The API key for Google Maps-based APIs is defined as a string resource.
             (See the file "res/values/google_maps_api.xml").
@@ -37,7 +48,7 @@
             You need a different API key for each encryption key, including the release key that is used to
             sign the APK for publishing.
             You can define the keys for the debug and release targets in src/debug/ and src/release/.
-       -->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -110,6 +121,10 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ui.map.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.InsertPreOrcamento"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

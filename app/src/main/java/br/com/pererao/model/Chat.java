@@ -5,18 +5,24 @@ public class Chat {
     private String message;
     private String receiver;
     private String sender;
+    private String keyMessage;
+    private String imgUrl;
+    private String imgKey;
     private boolean isseen;
     private long messageTime;
 
     public Chat() {
     }
 
-    public Chat(String message, String receiver, String sender, long messageTime, boolean isseen) {
+    public Chat(String message, String receiver, String sender, long messageTime, boolean isseen, String keyMessage, String imgUrl, String imgKey) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;
         this.messageTime = messageTime;
         this.isseen = isseen;
+        this.keyMessage = keyMessage;
+        this.imgUrl = imgUrl;
+        this.imgKey = imgKey;
     }
 
     public Chat(String message) {
@@ -61,5 +67,29 @@ public class Chat {
 
     public void setIsseen(boolean isseen) {
         this.isseen = isseen;
+    }
+
+    public String getKeyMessage() {
+        return keyMessage;
+    }
+
+    public void setKeyMessage(String keyMessage) {
+        this.keyMessage = keyMessage;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public String getImgKey() {
+        return imgKey;
+    }
+
+    public void setImgKey(String imgKey) {
+        this.imgKey = imgKey;
     }
 }

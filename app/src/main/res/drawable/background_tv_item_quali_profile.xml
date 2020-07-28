@@ -4,10 +4,11 @@
     android:shape="rectangle"
     tools:ignore="MissingDefaultResource">
 
-    <corners
-        android:radius="10dp"
-        android:topLeftRadius="0dp"/>
+    <size android:width="30dp" android:height="10dp" />
 
-    <solid android:color="@color/textColorInvert"/>
+    <corners
+        android:radius="10dp"/>
+
+    <solid android:color="@android:color/white"/>
 
 </shape>

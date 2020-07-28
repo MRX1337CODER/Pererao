@@ -22,4 +22,5 @@
         android:text="Carregando..."
         android:textColor="#131313"
         android:textSize="18sp" />
+
 </RelativeLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:id="@+id/ll_intent"
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:background="@drawable/background_top"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/ll_gallery"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_galeria"
+                android:tint="@color/colorPrimaryDark"
+                card_view:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:gravity="center_horizontal"
+                android:text="@string/gallery"
+                android:textColor="@color/textColorInvert"
+                android:textSize="15sp"
+                android:textStyle="italic|bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_cam"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_camera"
+                android:tint="@color/colorPrimaryDark"
+                card_view:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:gravity="center_horizontal"
+                android:text="@string/cam"
+                android:textColor="@color/textColorInvert"
+                android:textSize="15sp"
+                android:textStyle="italic|bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

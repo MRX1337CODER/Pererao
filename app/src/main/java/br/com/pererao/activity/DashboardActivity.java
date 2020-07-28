@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
     boolean doubleBackToExitPressedOnce = false;
     LinearLayout linearLayout;
     TextView tv_username, tv_email;
-    CircleImageView user_image, new_message;
+    ImageView user_image, new_message;
     Button btn_profile, btn_maps, btn_chat, btn_configuration;
     private static final String TAG = "DashboardActivity";
     LoadingDialog loadingDialog = new LoadingDialog(DashboardActivity.this);
@@ -109,13 +110,14 @@ public class DashboardActivity extends AppCompatActivity implements View.OnClick
             gotoVerifyAccount();
         } else {
 
-            mDatabaseReference.child("Chat").addValueEventListener(new ValueEventListener() {
+            mDatabaseReference.child("Chat").child("Mensagens").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
                         int unread = 0;
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                             Chat chat = snapshot.getValue(Chat.class);
+                            assert chat != null;
                             if (chat.getReceiver().equals(mFirebaseUser.getUid()) && !chat.isIsseen()) {
                                 unread++;
                             }
